@@ -32,8 +32,8 @@ Mean <- R6::R6Class("Mean", public = list(
     #' @return The new \code{Mean} (invisibly)
     initialize = function(x = NULL) {
         if (!is.null(x)) {
-            self$sum <- self$sum + sum(x)
-            self$count <- self$count + length(x)
+            private$sum <- private$sum + sum(x)
+            private$count <- private$count + length(x)
         }
         invisible(self)
     },
@@ -47,8 +47,8 @@ Mean <- R6::R6Class("Mean", public = list(
     #'
     #' @return The updated \code{Mean} (invisibly)
     update = function(x) {
-        self$sum <- self$sum + sum(x)
-        self$count <- self$count + length(x)
+        private$sum <- private$sum + sum(x)
+        private$count <- private$count + length(x)
         invisible(self)
     },
     #' @description Returns the current value of the mean.
@@ -60,10 +60,10 @@ Mean <- R6::R6Class("Mean", public = list(
     #'
     #' @return The updated \code{Mean} (invisibly)
     value = function() {
-        if (self$count == 0L) {
+        if (private$count == 0L) {
             return(0)
         }
-        self$sum / self$count
+        private$sum / private$count
     },
     #' @description Resets the \code{Mean} streamer object.
     #'
@@ -76,11 +76,11 @@ Mean <- R6::R6Class("Mean", public = list(
     #' @return The updated \code{Mean} (invisibly)
     reset = function(x = NULL) {
         if (!is.null(x)) {
-            self$sum <- sum(x)
-            self$count <- length(x)
+            private$sum <- sum(x)
+            private$count <- length(x)
         } else {
-            self$sum <- 0
-            self$count <- 0L
+            private$sum <- 0
+            private$count <- 0L
         }
         invisible(self)
     }
