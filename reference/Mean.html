@@ -221,9 +221,16 @@ structures by converting from <code>data.frame</code>, <code>list</code>, or oth
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>mean</span> <span class='op'>&lt;-</span> <span class='va'>Mean</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in self$sum &lt;- self$sum + sum(x): cannot add bindings to a locked environment</span></div><div class='input'><span class='va'>mean</span><span class='op'>$</span><span class='fu'>update</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in mean$update: object of type 'closure' is not subsettable</span></div><div class='input'><span class='va'>mean</span><span class='op'>$</span><span class='va'>value</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in mean$value: object of type 'closure' is not subsettable</span></div><div class='input'><span class='co'>#&gt; [1] 2.5</span>
+<span class='va'>mean</span><span class='op'>$</span><span class='fu'>update</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>mean</span><span class='op'>$</span><span class='va'>value</span>
+</div><div class='output co'>#&gt; function () 
+#&gt; {
+#&gt;     if (private$count == 0L) {
+#&gt;         return(0)
+#&gt;     }
+#&gt;     private$sum/private$count
+#&gt; }
+#&gt; &lt;environment: 0x7fea8ecfd900&gt;</div><div class='input'><span class='co'>#&gt; [1] 2.5</span>
 
 
 <span class='co'>## ------------------------------------------------</span>
@@ -232,7 +239,7 @@ structures by converting from <code>data.frame</code>, <code>list</code>, or oth
 
 <span class='va'>mean</span> <span class='op'>&lt;-</span> <span class='va'>Mean</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
 <span class='va'>mean</span><span class='op'>$</span><span class='fu'>reset</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in self$sum &lt;- 0: cannot add bindings to a locked environment</span></div><div class='input'>
+
 
 
 <span class='co'>## ------------------------------------------------</span>
@@ -241,15 +248,15 @@ structures by converting from <code>data.frame</code>, <code>list</code>, or oth
 
 <span class='va'>mean</span> <span class='op'>&lt;-</span> <span class='va'>Mean</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
 <span class='va'>mean</span><span class='op'>$</span><span class='fu'>update</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in self$sum &lt;- self$sum + sum(x): cannot add bindings to a locked environment</span></div><div class='input'>
+
 
 <span class='co'>## ------------------------------------------------</span>
 <span class='co'>## Method `Mean$value`</span>
 <span class='co'>## ------------------------------------------------</span>
 
 <span class='va'>mean</span> <span class='op'>&lt;-</span> <span class='va'>Mean</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in self$sum &lt;- self$sum + sum(x): cannot add bindings to a locked environment</span></div><div class='input'><span class='va'>mean</span><span class='op'>$</span><span class='fu'>value</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in if (self$count == 0L) {    return(0)}: argument is of length zero</span></div><div class='input'><span class='co'>#&gt; [1] 2</span>
+<span class='va'>mean</span><span class='op'>$</span><span class='fu'>value</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 2</div><div class='input'><span class='co'>#&gt; [1] 2</span>
 
 
 <span class='co'>## ------------------------------------------------</span>
@@ -258,7 +265,7 @@ structures by converting from <code>data.frame</code>, <code>list</code>, or oth
 
 <span class='va'>mean</span> <span class='op'>&lt;-</span> <span class='va'>Mean</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='op'>)</span>
 <span class='va'>mean</span><span class='op'>$</span><span class='fu'>reset</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in self$sum &lt;- 0: cannot add bindings to a locked environment</span></div><div class='input'>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
