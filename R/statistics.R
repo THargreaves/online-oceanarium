@@ -3,10 +3,6 @@
 #' @description \code{Mean} creates a streaming algorithm that can be used to
 #' keep track of the mean of incoming values.
 #'
-#' @usage
-#' mean <- Mean$new()
-#'
-#'
 #' @details Assemble \code{Node} objects into a \code{data.tree}
 #' structure and use the traversal methods to set, get, and perform operations on it. Typically, you construct larger tree
 #' structures by converting from \code{data.frame}, \code{list}, or other formats.

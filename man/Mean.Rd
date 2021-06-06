@@ -7,9 +7,6 @@
 \format{
 An \code{\link{R6Class}} generator object
 }
-\usage{
-mean <- Mean$new()
-}
 \description{
 \code{Mean} creates a streaming algorithm that can be used to
 keep track of the mean of incoming values.
