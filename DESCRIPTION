@@ -2,13 +2,17 @@ Package: onlineoceanarium
 Type: Package
 Title: Online Oceanarium
 Version: 0.1.0
-Authors@R: c(
-    person("Hargreaves", "Tim", email = "hello@timhargreaves.com",
-           role = c("aut", "cre")),
-    person("Katarzyna", "Kobalczyk", email = "kaasia.kobalczyk@gmail.com",
-           role = c("aut")),
+Author:
+    - Tim Hargreaves <hello@timhargreaves.com>
+    - Kasia Katarzyna <kaasia.kobalczyk@gmail.com>
+Maintainer: Tim Hargreaves <hello@timhargreaves.com>
 Description: A broad collection of online algorithms (a.k.a streaming
     algorithms) implemented in R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 7.1.1
+Suggests:
+    usethis
+Imports:
+    R6

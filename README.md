@@ -1,5 +1,6 @@
 [![Language](https://img.shields.io/badge/Language-R_(4.1.0%2B)-orange.svg)](https://www.r-project.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![R-CMD-check](https://github.com/THargreaves/onlineoceanarium/workflows/R-CMD-check/badge.svg)](https://github.com/THargreaves/onlineoceanarium/actions)
 
 # Online Oceanarium
 
