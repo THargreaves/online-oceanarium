@@ -1,7 +1,7 @@
 ExpMean <- R6::R6Class("ExpMean", publi = list(
     #' @description Creates a new \code{ExpMean} streamer object.
     #'
-    #' @param x values to be used during initialisation (optional)
+    #' @param x values to be used during initialization (optional)
     #' @param alpha value of the smoothing factor (0.5 by default)
     #'
     #' @examples
@@ -14,9 +14,7 @@ ExpMean <- R6::R6Class("ExpMean", publi = list(
             stop("The smoothing factor must take values between 0 and 1.")
         } else {
             private$alpha <- alpha
-            if(is.null(x)) {
-                private$mean <- NULL
-            } else {
+            if(!is.null(x)) {
                 k <- length(x)
                 if(k == 1) {
                     private$mean <- x
