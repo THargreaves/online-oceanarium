@@ -55,6 +55,8 @@ LinearRegression <- R6::R6Class("Mean", public = list(
         magnitude <- as.numeric((y - X %*% private$beta) / (1 + X %*% solve(C, t(X))))
         direction <- solve(C, t(X))
         private$beta <- private$beta + magnitude * direction
+        # Update design matrix
+        private$X <- rbind(private$X, X)
     },
     #' @description Returns the current coefficient vector.
     #'
