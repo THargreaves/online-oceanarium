@@ -3,11 +3,6 @@
 #' @description \code{Mean} creates a streaming algorithm that can be used to
 #' keep track of the mean of incoming values.
 #'
-#' @details Assemble \code{Node} objects into a \code{data.tree}
-#' structure and use the traversal methods to set, get, and perform operations on it. Typically, you construct larger tree
-#' structures by converting from \code{data.frame}, \code{list}, or other formats.
-#'
-#' Most methods (e.g. \code{node$Sort()}) also have a functional form (e.g. \code{Sort(node)})
 #'
 #' @docType class
 #'
@@ -26,8 +21,6 @@ Mean <- R6::R6Class("Mean", public = list(
     #'
     #' @examples
     #' mean <- Mean$new()
-    #' mean$reset()
-    #'
     #'
     #' @return The new \code{Mean} (invisibly)
     initialize = function(x = NULL) {
@@ -64,25 +57,6 @@ Mean <- R6::R6Class("Mean", public = list(
             return(0)
         }
         private$sum / private$count
-    },
-    #' @description Resets the \code{Mean} streamer object.
-    #'
-    #' @param x values to be used during re-initialisation (optional)
-    #'
-    #' @examples
-    #' mean <- Mean$new()
-    #' mean$reset()
-    #'
-    #' @return The updated \code{Mean} (invisibly)
-    reset = function(x = NULL) {
-        if (!is.null(x)) {
-            private$sum <- sum(x)
-            private$count <- length(x)
-        } else {
-            private$sum <- 0
-            private$count <- 0L
-        }
-        invisible(self)
     }
     ), private = list(
         sum = 0,
