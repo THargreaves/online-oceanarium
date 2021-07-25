@@ -11,13 +11,6 @@ An \code{\link{R6Class}} generator object
 \code{Mean} creates a streaming algorithm that can be used to
 keep track of the mean of incoming values.
 }
-\details{
-Assemble \code{Node} objects into a \code{data.tree}
-structure and use the traversal methods to set, get, and perform operations on it. Typically, you construct larger tree
-structures by converting from \code{data.frame}, \code{list}, or other formats.
-
-Most methods (e.g. \code{node$Sort()}) also have a functional form (e.g. \code{Sort(node)})
-}
 \examples{
 mean <- Mean$new(c(1, 2))
 mean$update(c(3, 4))
@@ -30,8 +23,6 @@ mean$value
 ## ------------------------------------------------
 
 mean <- Mean$new()
-mean$reset()
-
 
 
 ## ------------------------------------------------
@@ -50,14 +41,6 @@ mean <- Mean$new(c(1, 2, 3))
 mean$value()
 #> [1] 2
 
-
-## ------------------------------------------------
-## Method `Mean$reset`
-## ------------------------------------------------
-
-mean <- Mean$new()
-mean$reset()
-
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -65,7 +48,6 @@ mean$reset()
 \item \href{#method-new}{\code{Mean$new()}}
 \item \href{#method-update}{\code{Mean$update()}}
 \item \href{#method-value}{\code{Mean$value()}}
-\item \href{#method-reset}{\code{Mean$reset()}}
 \item \href{#method-clone}{\code{Mean$clone()}}
 }
 }
@@ -91,8 +73,6 @@ The new \code{Mean} (invisibly)
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{mean <- Mean$new()
-mean$reset()
-
 
 }
 \if{html}{\out{</div>}}
@@ -147,36 +127,6 @@ The updated \code{Mean} (invisibly)
 \preformatted{mean <- Mean$new(c(1, 2, 3))
 mean$value()
 #> [1] 2
-
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset"></a>}}
-\if{latex}{\out{\hypertarget{method-reset}{}}}
-\subsection{Method \code{reset()}}{
-Resets the \code{Mean} streamer object.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Mean$reset(x = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{values to be used during re-initialisation (optional)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The updated \code{Mean} (invisibly)
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{mean <- Mean$new()
-mean$reset()
 
 }
 \if{html}{\out{</div>}}
