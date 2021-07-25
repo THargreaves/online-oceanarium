@@ -91,11 +91,10 @@ EMA <- R6::R6Class("EMA", public = list(
     #'
     #' @return The new \code{EMA} (invisibly)
     initialize = function(x = NULL, alpha = 0.5) {
-        if (alpha < 0 || alpha > 1) {
+        if (!(alpha >= 0 && alpha <= 1)) {
             stop("The smoothing factor must take values between 0 and 1.")
-        } else {
-            private$alpha <- alpha
         }
+        private$alpha <- alpha
         if (!is.null(x)) {
             private$update_values(x)
         }
