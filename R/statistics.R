@@ -143,3 +143,92 @@ EMA <- R6::R6Class("EMA", public = list(
 )
 )
 
+#' Create a streamer for calculating the population variance
+#'
+#' @description \code{Variance} creates a streaming algorithm that can be used to
+#' calculate the population variance of incoming values
+#'
+#'
+#' @docType class
+#'
+#' @examples
+#' variance <- Variance$new(c(1, 2))
+#' variance$update(c(3, 4))
+#' variance$value
+#' #> [1] 1.25
+#'
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+Variance <- R6::R6Class("Variance", public = list(
+    #' @description Creates a new \code{Variance} streamer object.
+    #'
+    #' @param x values to be used during initialization (optional)
+    #'
+    #' @examples
+    #' variance <- Variance$new()
+    #'
+    #' @return The new \code{Variance} (invisibly)
+    initialize = function(x = NULL) {
+        if (!is.null(x)) {
+            private$sum <- private$sum + sum(x)
+            private$count <- private$count + length(x)
+            mean <- private$sum / private$count
+            private$variance <- 1/private$count * sum((x - mean)**2)
+        }
+        invisible(self)
+    },
+    #' @description Returns the current value of the Variance.
+    #'
+    #' @examples
+    #' variance <- Variance$new(x = c(1,2,3,4))
+    #' variance$value()
+    #' #> [1] 1.25
+    #'
+    #' @return The updated \code{Variance} (invisibly)
+    value = function() {
+        if (private$count == 0L) {
+            return(0)
+        }
+        as.numeric(private$variance)
+    },
+    #' @description Updates the Variance with a stream of new values
+    #'
+    #' @param x a vector of values to update the Variance
+    #'
+    #' @examples
+    #' variance <- Variance$new(c(1,2))
+    #' variance$update(c(3,4))
+    #'
+    #' @return The updated \code{Variance} (invisibly)
+    update = function(x) {
+        if (private$count == 0L) {
+            # take first element of x as the starting value
+            private$count <- 1
+            private$sum <- x[1]
+            x <- x[2:length(x)]
+        }
+        k <- length(x)
+        n <- private$count + k
+        counts <- seq(private$count + 1, private$count + k)
+        sums <- cumsum(x) + private$sum
+        means <- sums / counts
+        numerators <- seq(n - k + 1, n)
+        denominators <- n * seq(n - k, n - 1)
+        coefs <- numerators / denominators
+
+        private$variance <- (n - k)/n * private$variance + coefs %*% (x - means)**2
+        private$sum <- private$sum + sum(x)
+        private$count <- n
+
+        invisible(self)
+    }
+), private = list(
+    variance = 0,
+    sum = 0,
+    count = 0L
+)
+)
+
+
+
+
