@@ -143,10 +143,10 @@ EMA <- R6::R6Class("EMA", public = list(
 )
 )
 
-#' Create a streamer for calculating the population variance
+#' Create a streamer for calculating the population and sample variance
 #'
 #' @description \code{Variance} creates a streaming algorithm that can be used to
-#' calculate the population variance of incoming values
+#' calculate the population and sample variance of incoming values
 #'
 #'
 #' @docType class
@@ -164,6 +164,7 @@ Variance <- R6::R6Class("Variance", public = list(
     #'
     #' @param x values to be used during initialization (optional)
     #'
+    #'
     #' @examples
     #' variance <- Variance$new()
     #'
@@ -179,15 +180,25 @@ Variance <- R6::R6Class("Variance", public = list(
     },
     #' @description Returns the current value of the Variance.
     #'
+    #' @param sample for choosing between the population and sample variance.
+    #'    If `TRUE` the sample variance is returned.
+    #'    If `FALSE` the population variance is returned.
+    #'
     #' @examples
     #' variance <- Variance$new(x = c(1,2,3,4))
     #' variance$value()
     #' #> [1] 1.25
+    #' variance$value(sample = TRUE)
+    #' #> [1] 1.666667
     #'
     #' @return The updated \code{Variance} (invisibly)
-    value = function() {
+    value = function(sample = FALSE) {
         if (private$count == 0L) {
             return(0)
+        }
+        if (sample) {
+            n <- private$count
+            return(as.numeric(private$variance * n / (n - 1)))
         }
         as.numeric(private$variance)
     },
