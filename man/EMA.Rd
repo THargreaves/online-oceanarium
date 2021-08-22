@@ -14,7 +14,7 @@ calculate the exponential moving average of incoming values
 \examples{
 exp_mean <- EMA$new(c(1, 2))
 exp_mean$update(c(3, 4))
-exp_mean$value
+exp_mean$value()
 #> [1] 3.266667
 
 

@@ -9,7 +9,7 @@
 #' @examples
 #' mean <- CMA$new(c(1, 2))
 #' mean$update(c(3, 4))
-#' mean$value
+#' mean$value()
 #' #> [1] 2.5
 #'
 #' @export
@@ -74,7 +74,7 @@ CMA <- R6::R6Class("CMA", public = list(
 #'
 #' @examples
 #' mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
-#' mean$value
+#' mean$value()
 #' #> [1] 4
 #'
 #' @export
@@ -86,7 +86,7 @@ SMA <- R6::R6Class("SMA", public = list(
     #' @param window size of the window
     #'
     #' @examples
-    #' mean <- SMA$new()
+    #' mean <- SMA$new(window = 5)
     #'
     #' @return The new \code{SMA} (invisibly)
     initialize = function(x = NULL, window = NULL) {
@@ -107,8 +107,8 @@ SMA <- R6::R6Class("SMA", public = list(
     #' @param x values to be added to the stream
     #'
     #' @examples
-    #' mean <- SMA$new()
-    #' mean$update(c(1, 2))
+    #' mean <- SMA$new(c(1, 2, 3), window = 3)
+    #' mean$update(c(4, 5))
     #'
     #' @return The updated \code{SMA} (invisibly)
     update = function(x) {
@@ -157,7 +157,7 @@ SMA <- R6::R6Class("SMA", public = list(
 #' @examples
 #' exp_mean <- EMA$new(c(1, 2))
 #' exp_mean$update(c(3, 4))
-#' exp_mean$value
+#' exp_mean$value()
 #' #> [1] 3.266667
 #'
 #' @export
