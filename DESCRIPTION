@@ -12,8 +12,17 @@ License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
+Depends:
+    R (>= 4.1.0)
 Suggests:
     usethis,
-    pkgdown
+    pkgdown,
+    testthat,
+    covr,
+Enchances:
+    # VSCode
+    jsonlite,
+    rlang,
+    rlanguageserver,
 Imports:
     R6
