@@ -64,6 +64,88 @@ CMA <- R6::R6Class("CMA", public = list(
 )
 )
 
+#' Create a streamer for calculating the simple moving average
+#'
+#' @description \code{SMA} creates a streaming algorithm that can be used to
+#' keep track of the mean of the previous k datapoints
+#'
+#'
+#' @docType class
+#'
+#' @examples
+#' mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
+#' mean$value
+#' #> [1] 4
+#'
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+SMA <- R6::R6Class("SMA", public = list(
+    #' @description Creates a new \code{SMA} streamer object.
+    #'
+    #' @param x values to be used during initialisation (optional)
+    #' @param window size of the window
+    #'
+    #' @examples
+    #' mean <- SMA$new()
+    #'
+    #' @return The new \code{SMA} (invisibly)
+    initialize = function(x = NULL, window = NULL) {
+        private$check_window_size(window)
+        private$window = window
+        if (!is.null(x)) {
+            if (window >= length(x)) {
+                private$values <- x
+            }
+            else {
+                private$values <- x[seq(length(x) - window + 1, length(x))]
+            }
+        }
+        invisible(self)
+    },
+    #' @description Resets the \code{SMA} streamer object.
+    #'
+    #' @param x values to be added to the stream
+    #'
+    #' @examples
+    #' mean <- SMA$new()
+    #' mean$update(c(1, 2))
+    #'
+    #' @return The updated \code{SMA} (invisibly)
+    update = function(x) {
+        n <- length(x)
+        if (n >= private$window) {
+            private$values <- x[seq(length(x) - private$window + 1, length(x))]
+        } else {
+            private$values <- c(private$values[seq(length(x) + 1,
+                                                   private$window)], x)
+        }
+        invisible(self)
+    },
+    #' @description Returns the current value of the average.
+    #'
+    #' @examples
+    #' mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
+    #' mean$value()
+    #' #> [1] 4
+    #'
+    #' @return The updated \code{SMA} (invisibly)
+    value = function() {
+        sum(private$values) / private$window
+    }
+), private = list(
+    values = NULL,
+    window = NULL,
+    check_window_size = function(window) {
+        if (is.null(window)) {
+            stop("Size of the window must be specified")
+        }
+        if (round(window) != window | window <= 0) {
+            stop("Size of the window must be an integer > 0")
+        }
+    }
+)
+)
+
 #' Create a streamer for calculating the exponential moving average
 #'
 #' @description \code{EMA} creates a streaming algorithm that can be used to
