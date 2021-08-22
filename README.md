@@ -1,6 +1,7 @@
 [![Language](https://img.shields.io/badge/Language-R_(4.1.0%2B)-orange.svg)](https://www.r-project.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![R-CMD-check](https://github.com/THargreaves/onlineoceanarium/workflows/R-CMD-check/badge.svg)](https://github.com/THargreaves/onlineoceanarium/actions)
+[![Code Coverage](https://img.shields.io/codecov/c/github/THargreaves/onlineoceanarium)](https://app.codecov.io/gh/THargreaves/onlineoceanarium/)
 [![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](http://thargreaves.github.io/onlineoceanarium/)
 
 # Online Oceanarium
