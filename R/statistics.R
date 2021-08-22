@@ -114,10 +114,13 @@ SMA <- R6::R6Class("SMA", public = list(
     update = function(x) {
         n <- length(x)
         if (n >= private$window) {
-            private$values <- x[seq(length(x) - private$window + 1, length(x))]
+            private$values <- x[(length(x) - private$window + 1):length(x)]
         } else {
-            private$values <- c(private$values[seq(length(x) + 1,
-                                                   private$window)], x)
+            m <- length(private$values)
+            private$values <- c(
+                private$values[(m - (private$window - n) + 1):m],
+                x
+            )
         }
         invisible(self)
     },
