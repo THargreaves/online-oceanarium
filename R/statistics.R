@@ -1,28 +1,28 @@
-#' Create a streamer for calculating a running mean
+#' Create a streamer for calculating the cumulative moving average
 #'
-#' @description \code{Mean} creates a streaming algorithm that can be used to
+#' @description \code{CMA} creates a streaming algorithm that can be used to
 #' keep track of the mean of incoming values.
 #'
 #'
 #' @docType class
 #'
 #' @examples
-#' mean <- Mean$new(c(1, 2))
+#' mean <- CMA$new(c(1, 2))
 #' mean$update(c(3, 4))
 #' mean$value
 #' #> [1] 2.5
 #'
 #' @export
 #' @format An \code{\link{R6Class}} generator object
-Mean <- R6::R6Class("Mean", public = list(
-    #' @description Creates a new \code{Mean} streamer object.
+CMA <- R6::R6Class("CMA", public = list(
+    #' @description Creates a new \code{CMA} streamer object.
     #'
     #' @param x values to be used during initialisation (optional)
     #'
     #' @examples
-    #' mean <- Mean$new()
+    #' mean <- CMA$new()
     #'
-    #' @return The new \code{Mean} (invisibly)
+    #' @return The new \code{CMA} (invisibly)
     initialize = function(x = NULL) {
         if (!is.null(x)) {
             private$sum <- private$sum + sum(x)
@@ -30,15 +30,15 @@ Mean <- R6::R6Class("Mean", public = list(
         }
         invisible(self)
     },
-    #' @description Resets the \code{Mean} streamer object.
+    #' @description Resets the \code{CMA} streamer object.
     #'
     #' @param x values to be added to the stream
     #'
     #' @examples
-    #' mean <- Mean$new()
+    #' mean <- CMA$new()
     #' mean$update(c(1, 2))
     #'
-    #' @return The updated \code{Mean} (invisibly)
+    #' @return The updated \code{CMA} (invisibly)
     update = function(x) {
         private$sum <- private$sum + sum(x)
         private$count <- private$count + length(x)
@@ -47,11 +47,11 @@ Mean <- R6::R6Class("Mean", public = list(
     #' @description Returns the current value of the mean.
     #'
     #' @examples
-    #' mean <- Mean$new(c(1, 2, 3))
+    #' mean <- CMA$new(c(1, 2, 3))
     #' mean$value()
     #' #> [1] 2
     #'
-    #' @return The updated \code{Mean} (invisibly)
+    #' @return The updated \code{CMA} (invisibly)
     value = function() {
         if (private$count == 0L) {
             return(0)
