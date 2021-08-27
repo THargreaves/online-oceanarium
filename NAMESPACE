@@ -2,6 +2,7 @@
 
 export(CMA)
 export(EMA)
+export(LinearRegression)
 export(SMA)
 export(Variance)
 export(WMA)
