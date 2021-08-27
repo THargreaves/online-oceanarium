@@ -1,5 +1,11 @@
+# R
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+
+# Package
 docs
+
+# General
+.DS_Store

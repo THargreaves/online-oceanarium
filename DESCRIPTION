@@ -8,12 +8,21 @@ Author:
 Maintainer: Tim Hargreaves <hello@timhargreaves.com>
 Description: A broad collection of online algorithms (a.k.a streaming
     algorithms) implemented in R.
-License: MIT
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
+Depends:
+    R (>= 4.1.0)
 Suggests:
     usethis,
-    pkgdown
+    pkgdown,
+    testthat,
+    covr,
+Enchances:
+    # VSCode
+    jsonlite,
+    rlang,
+    rlanguageserver,
 Imports:
     R6
