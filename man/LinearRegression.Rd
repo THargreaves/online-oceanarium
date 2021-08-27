@@ -12,12 +12,12 @@ An \code{\link{R6Class}} generator object
 calculate and update linear regression coefficients.
 }
 \examples{
-X <- matrix(c(1, 2, 3, 5), ncol = 2)
-y <- c(1, 3)
-mean <- LinearRegression$new(X, y)
-X_new <- matrix(c(5, 6), ncol = 2)
-y_new <- 3
-mean$update(X_new, y_new)
+X <- matrix(c(3, 1, 4, 1, 5, 9, 2, 6), ncol = 2)
+y <- c(2, 7, 1, 8)
+reg <- LinearRegression$new(X, y)
+X_new <- matrix(c(5, 3, 5, 8), ncol = 2)
+y_new <- c(2, 8)
+reg$update(X_new, y_new)
 
 }
 \section{Methods}{
@@ -35,7 +35,7 @@ mean$update(X_new, y_new)
 \subsection{Method \code{new()}}{
 Creates a new \code{LinearRegression} streamer object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LinearRegression$new(X, y)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LinearRegression$new(X, y, fit_intercept = TRUE, method = "sherman-morrison")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -44,6 +44,10 @@ Creates a new \code{LinearRegression} streamer object.
 \item{\code{X}}{initial design matrix}
 
 \item{\code{y}}{initial labels}
+
+\item{\code{fit_intercept}}{if `TRUE`, add an intercept to the model}
+
+\item{\code{method}}{the method used to update regression coefficients}
 }
 \if{html}{\out{</div>}}
 }
@@ -63,14 +67,13 @@ Updates the regression coefficient based on new data
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{new design matrix (currently must be 1xp)}
+\item{\code{X}}{new design matrix}
 
-\item{\code{y}}{new labels (currently must be of length 1)}
+\item{\code{y}}{new labels
+
+#' @return The updated \code{LinearRegression} (invisibly)}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The updated \code{LinearRegression} (invisibly)
 }
 }
 \if{html}{\out{<hr>}}
