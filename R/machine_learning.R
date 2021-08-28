@@ -25,7 +25,7 @@ LinearRegression <- R6::R6Class("LinearRegression", public = list(
     #'
     #' @return The new \code{LinearRegression} (invisibly)
     initialize = function(X, y, fit_intercept = TRUE,
-                          method = "sherman-morrison") {
+                          method = "woodbury") {
         # Validation
         private$validate_data(X, y)
         # TODO: how to validate Booleans?
@@ -66,9 +66,11 @@ LinearRegression <- R6::R6Class("LinearRegression", public = list(
             "new design matrix must have the same number of predictors as the",
             "current", sprintf("(%d != %d)", ncol(X), ncol(private$X))
         ))
-        # Dispatch update method
-        if (private$method == "sherman-morrison") {
-                private$sherman_morrison_update(X, y)
+        # Dispatch update method (ordered by preference)
+        if (private$method == "woodbury") {
+            private$woodbury_update(X, y)
+        } else if (private$method == "sherman-morrison") {
+            private$sherman_morrison_update(X, y)
         } else {
             # Should not be reached if private$valid_methods is correct
             stop("invalid method")
@@ -87,7 +89,8 @@ LinearRegression <- R6::R6Class("LinearRegression", public = list(
     fit_intercept = NULL,
     method = NULL,
     valid_methods = c(
-        "sherman-morrison"
+        "sherman-morrison",
+        "woodbury"
     ),
     validate_data = function(X, y) {
         if (!is.matrix(X)) stop("X must be a matrix")
@@ -105,7 +108,7 @@ LinearRegression <- R6::R6Class("LinearRegression", public = list(
             Xi <- X[i, ]  # becomes a column vector
             yi <- y[i]
             # Update coefficients
-            magnitude <- as.numeric(
+            magnitude <- (
                 (yi - sum(Xi * private$beta)) /
                 (1 + sum(Xi * solve(private$C, Xi)))
             )
@@ -114,6 +117,18 @@ LinearRegression <- R6::R6Class("LinearRegression", public = list(
             # Update covariance matrix
             private$C <- private$C + outer(Xi, Xi)
         }
+    },
+    woodbury_update = function(X, y) {
+        # Update coefficients
+        n <- nrow(X)
+        inverse_term <- diag(n) + X %*% solve(private$C, t(X))
+        update <- as.numeric(
+            t(solve(inverse_term, t(solve(private$C, t(X))))) %*%
+            (y - X %*% private$beta)
+        )  # 1xp mtrx -> vector
+        private$beta <- private$beta + update
+        # Update covariance matrix
+        private$C <- private$C + t(X) %*% X
     }
 )
 )
