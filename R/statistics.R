@@ -51,7 +51,7 @@ CMA <- R6::R6Class("CMA", public = list(
     #' mean$value()
     #' #> [1] 2
     #'
-    #' @return The updated \code{CMA} (invisibly)
+    #' @return The current value of the \code{CMA} (invisibly)
     value = function() {
         if (private$count == 0L) {
             return(0)
@@ -126,14 +126,17 @@ SMA <- R6::R6Class("SMA", public = list(
     },
     #' @description Returns the current value of the average.
     #'
+    #' If the number of values in the stream is less than the size of the window,
+    #' the returned values is the mean of the entire stream of data.
+    #'
     #' @examples
     #' mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
     #' mean$value()
     #' #> [1] 4
     #'
-    #' @return The updated \code{SMA} (invisibly)
+    #' @return The current value of \code{SMA} (invisibly)
     value = function() {
-        sum(private$values) / private$window
+        sum(private$values) / length(private$values)
     }
 ), private = list(
     values = NULL,
@@ -207,7 +210,7 @@ WMA <- R6::R6Class("WMA", public = list(
     #' weighted_mean$value()
     #' #> [1] 7.5
     #'
-    #' @return The updated \code{WMA} (invisibly)
+    #' @return The current value of the \code{WMA} (invisibly)
     value = function() {
         if (private$count == 0L) {
             return(0)
@@ -263,7 +266,7 @@ EMA <- R6::R6Class("EMA", public = list(
     #' exp_mean$value()
     #' #> [1] 3.266667
     #'
-    #' @return The updated \code{EMA} (invisibly)
+    #' @return The current value of the \code{EMA} (invisibly)
     value = function() {
         if (private$weighted_count == 0L) {
             return(0)
@@ -346,7 +349,7 @@ Variance <- R6::R6Class("Variance", public = list(
     #' variance$value(sample = TRUE)
     #' #> [1] 1.666667
     #'
-    #' @return The updated \code{Variance} (invisibly)
+    #' @return The current value of the \code{Variance} (invisibly)
     value = function(sample = FALSE) {
         if (private$count == 0L) {
             return(0)
