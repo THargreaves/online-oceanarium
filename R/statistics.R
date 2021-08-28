@@ -136,6 +136,9 @@ SMA <- R6::R6Class("SMA", public = list(
     #'
     #' @return The current value of \code{SMA} (invisibly)
     value = function() {
+        if (is.null(private$values)) {
+            return(0)
+        }
         sum(private$values) / length(private$values)
     }
 ), private = list(
