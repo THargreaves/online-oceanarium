@@ -35,7 +35,7 @@ reg$update(X_new, y_new)
 \subsection{Method \code{new()}}{
 Creates a new \code{LinearRegression} streamer object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LinearRegression$new(X, y, fit_intercept = TRUE, method = "sherman-morrison")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LinearRegression$new(X, y, fit_intercept = TRUE, method = "woodbury")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

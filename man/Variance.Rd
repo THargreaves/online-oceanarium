@@ -101,7 +101,7 @@ If `FALSE` the population variance is returned.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The updated \code{Variance} (invisibly)
+The current value of the \code{Variance} (invisibly)
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
