@@ -79,11 +79,11 @@ test_that("Variance provides correct results", {
     variance <- Variance$new()
     expect_identical(variance$value(), 0)
     # Update empty streamer
-    variance$update(c(1,2,3,4))
+    variance$update(c(1, 2, 3, 4))
     expect_identical(variance$value(), 1.25)
     expect_equal(variance$value(sample = TRUE), 1.666667, tolerance = 10e-6)
     # Initialised streamer
-    variance <- Variance$new(c(1,2,3,4))
+    variance <- Variance$new(c(1, 2, 3, 4))
     expect_identical(variance$value(), 1.25)
     expect_equal(variance$value(sample = TRUE), 1.666667, tolerance = 10e-6)
     # Updating
