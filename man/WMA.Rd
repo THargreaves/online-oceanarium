@@ -123,7 +123,7 @@ Returns the current value of the weighted average.
 }
 
 \subsection{Returns}{
-The updated \code{WMA} (invisibly)
+The current value of the \code{WMA} (invisibly)
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

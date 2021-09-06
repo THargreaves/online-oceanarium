@@ -3,6 +3,9 @@ test_that("CMA provides correct results", {
     # Empty streamer
     mean <- CMA$new()
     expect_identical(mean$value(), 0)
+    # Update empty streamer
+    mean$update(c(1, 2, 3))
+    expect_identical(mean$value(), 2)
     # Initialised streamer
     mean <- CMA$new(c(1, 2))
     expect_identical(mean$value(), 1.5)
@@ -15,6 +18,9 @@ test_that("SMA provides correct results", {
     # Empty streamer
     mean <- SMA$new(window = 3)
     expect_identical(mean$value(), 0)
+    # Update empty streamer
+    mean$update(c(1, 2, 3))
+    expect_identical(mean$value(), 2)
     # Short window initialisation
     mean <- SMA$new(c(1, 2, 3), window = 2)
     expect_identical(mean$value(), 2.5)
@@ -23,8 +29,7 @@ test_that("SMA provides correct results", {
     expect_identical(mean$value(), 2)
     # Long window initialisation
     mean <- SMA$new(c(1, 2, 3), window = 4)
-    # TODO: See issue #8
-    # expect_identical(mean$value(), 2)
+    expect_identical(mean$value(), 2)
     # Updating short
     mean$update(c(4, 5))
     expect_identical(mean$value(), 3.5)
@@ -34,4 +39,55 @@ test_that("SMA provides correct results", {
     # Updating long
     mean$update(c(1, 2, 3, 4, 5))
     expect_identical(mean$value(), 3.5)
+})
+
+test_that("WMA provides correct results", {
+    # Empty streamer
+    weighted_mean <- WMA$new()
+    expect_identical(weighted_mean$value(), 0)
+    # Update empty streamer
+    weighted_mean$update(c(1, 2, 3, 4))
+    expect_identical(weighted_mean$value(), 7.5)
+    # Initialised streamer
+    weighted_mean <- WMA$new(c(1, 2, 3, 4))
+    expect_identical(weighted_mean$value(), 7.5)
+    # Updating
+    weighted_mean$update(10)
+    expect_identical(weighted_mean$value(), 16)
+})
+
+test_that("EMA provides correct results", {
+    # Empty streamer
+    exp_mean <- EMA$new()
+    expect_identical(exp_mean$value(), 0)
+    # Update empty streamer
+    exp_mean <- exp_mean$update(c(1, 2, 3))
+    expect_equal(exp_mean$value(), 2.428571, tolerance = 10e-6)
+    # Initialised streamer with default alpha = 0.5
+    exp_mean <- EMA$new(c(1, 2, 3))
+    expect_equal(exp_mean$value(), 2.428571, tolerance = 10e-6)
+    # Initialised streamer with alpha = 0.8
+    exp_mean <- EMA$new(c(1, 2, 3), alpha = 0.8)
+    expect_equal(exp_mean$value(), 2.774194, tolerance = 10e-6)
+    # Updating
+    exp_mean$update(4)
+    expect_equal(exp_mean$value(), 3.75641, tolerance = 10e-6)
+})
+
+test_that("Variance provides correct results", {
+    # Empty streamer
+    variance <- Variance$new()
+    expect_identical(variance$value(), 0)
+    # Update empty streamer
+    variance$update(c(1,2,3,4))
+    expect_identical(variance$value(), 1.25)
+    expect_equal(variance$value(sample = TRUE), 1.666667, tolerance = 10e-6)
+    # Initialised streamer
+    variance <- Variance$new(c(1,2,3,4))
+    expect_identical(variance$value(), 1.25)
+    expect_equal(variance$value(sample = TRUE), 1.666667, tolerance = 10e-6)
+    # Updating
+    variance$update(5)
+    expect_identical(variance$value(), 2)
+    expect_identical(variance$value(sample = TRUE), 2.5)
 })

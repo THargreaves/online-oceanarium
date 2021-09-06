@@ -120,7 +120,7 @@ Returns the current value of the mean.
 }
 
 \subsection{Returns}{
-The updated \code{CMA} (invisibly)
+The current value of the \code{CMA} (invisibly)
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
