@@ -169,11 +169,13 @@ keep track of the mean of the previous k datapoints</p>
 
 <p><hr>
 <a id="method-value"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>value()</code></h3>
-<p>Returns the current value of the average.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p>Returns the current value of the average.</p>
+<p>If the number of values in the stream is less than the size of the window,
+the returned values is the mean of the entire stream of data.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>SMA</span><span class='op'>$</span><span class='fu'>value</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
-<p>The updated <code>SMA</code> (invisibly)</p>
+<p>The current value of <code>SMA</code> (invisibly)</p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
 <p><div class="r example copy"></p><pre><span class='va'>mean</span> <span class='op'>&lt;-</span> <span class='va'>SMA</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span><span class='op'>)</span>, window <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 <span class='va'>mean</span><span class='op'>$</span><span class='fu'>value</span><span class='op'>(</span><span class='op'>)</span>
@@ -197,7 +199,7 @@ keep track of the mean of the previous k datapoints</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>mean</span> <span class='op'>&lt;-</span> <span class='va'>SMA</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span><span class='op'>)</span>, window <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 <span class='va'>mean</span><span class='op'>$</span><span class='fu'>value</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 4</div><div class='input'><span class='co'>#&gt; [1] </span>
+</div><div class='output co'>#&gt; [1] 4</div><div class='input'><span class='co'>#&gt; [1] 4</span>
 
 
 <span class='co'>## ------------------------------------------------</span>
