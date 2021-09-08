@@ -23,6 +23,6 @@ Enchances:
     # VSCode
     jsonlite,
     rlang,
-    rlanguageserver,
+    languageserver,
 Imports:
     R6
