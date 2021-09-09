@@ -1,3 +1,47 @@
+ArraySorting <- R6::R6Class("ArraySorting", public = list(
+    initialize = function(x = NULL) {
+        if (!is.null(x)) {
+            private$insert_values(x)
+        }
+        invisible(self)
+    },
+    update = function(x) {
+        private$insert_values(x)
+        invisible(self)
+    },
+    value = function() {
+        private$sorted_values
+    }
+), private = list(
+    sorted_values = c(),
+    insert_values = function(x) {
+        for (e in x) {
+            # If array is empty insert as only element
+            if (length(private$sorted_values) == 0) {
+                private$sorted_values <- e
+            } else {
+                # Scan through the array and insert before the first value
+                # that is larger than it
+                for (i in seq_along(private$sorted_values)) {
+                    inserted <- FALSE
+                    if (e <= private$sorted_values[i]) {
+                        private$sorted_values <- append(
+                            private$sorted_values, e, after = i - 1
+                        )
+                        inserted <- TRUE
+                        break
+                    }
+                }
+                # If not inserted, it is larger than all values, so add to end
+                if (!inserted) {
+                    private$sorted_values <- c(private$sorted_values, e)
+                }
+            }
+        }
+    }
+)
+)
+
 LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
     initialize = function(x = NULL) {
         if (!is.null(x)) {
@@ -120,8 +164,8 @@ Sorting <- R6::R6Class("Sorting", public = list(
     }
 ), private = list(
     method_lookup = list(
-        `linked-list` = LinkedListSorting,
-        `array` = NULL
+        `array` = ArraySorting,
+        `linked-list` = LinkedListSorting
     ),
     sorter = NULL
 )
