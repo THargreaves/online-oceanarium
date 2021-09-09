@@ -42,6 +42,15 @@ ArraySorting <- R6::R6Class("ArraySorting", public = list(
 )
 )
 
+Node <- R6::R6Class("Node", public = list(
+    initialize = function(data, link = NULL) {
+        self$data <- data
+        self$link <- link
+    },
+    data = NULL,
+    link = NULL
+))
+
 LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
     initialize = function(x = NULL) {
         if (!is.null(x)) {
@@ -55,14 +64,14 @@ LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
     },
     value = function() {
         value <- c()
-        if (is.null(private$start)) {
+        if (is.null(private$head)) {
             return(value)
         }
-        curr <- private$start
+        curr <- private$head
         repeat {
-            count <- private$linked_list[[curr]]$count
-            value <- append(value, rep(curr, count))
-            curr <- private$linked_list[[curr]]$link
+            count <- curr$data$count
+            value <- append(value, rep(curr$data$value, count))
+            curr <- curr$link
             if (is.null(curr)) {
                 break
             }
@@ -70,39 +79,51 @@ LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
         value
     }
 ), private = list(
-    start = NULL,
-    linked_list = list(),  # key -> (count, link)
+    head = NULL,
     insert_values = function(x) {
         for (e in x) {
-            if (is.null(private$start)) {  # linked list is empty
-                private$linked_list[[e]] <- list(count = 1, link = NULL)
-                private$start <- e
-            } else if (e < private$start) {  # new value proceeds linked list
-                private$linked_list[[e]] <-
-                    list(count = 1, link = private$start)
-                private$start <- e
+            # Linked list is empty
+            if (is.null(private$head)) {
+                private$head <- Node$new(list(
+                    value = e,
+                    count = 1
+                ), NULL)
+            # New value proceeds linked list
+            } else if (e < private$head$data$value) {
+                new_head <- private$head <- Node$new(data = list(
+                    value = e,
+                    count = 1
+                ), link = private$head)
+                private$head <- new_head
             }
             else {
                 # Traverse linked list to see where to insert
                 last <- NULL
-                curr <- private$start
+                curr <- private$head
                 repeat {
-                    if (e < curr) {  # insert before curr item
+                    # Insert before curr item
+                    if (e < curr$data$value) {
                         # NB: last won't be NULL since we check e < start above
-                        private$linked_list[[last]]$link <- e
-                        private$linked_list[[e]] <- list(count = 1, link = curr)
+                        new_node <- Node$new(data = list(
+                            value = e,
+                            count = 1
+                        ), link = curr)
+                        last$link <- new_node
                         break
-                    } else if (e == curr) {  # item already in linked list
-                        private$linked_list[[e]]$count <-
-                            private$linked_list[[e]]$count + 1
+                    # Item already in linked list
+                    } else if (e == curr$data$value) {
+                        curr$data$count <- curr$data$count + 1
                         break
-                    } else {  # reached end of list or move to next item
+                    # Reached end of list or move to next item
+                    } else {
                         last <- curr
-                        curr <- private$linked_list[[curr]]$link
+                        curr <- curr$link
                         if (is.null(curr)) {
-                            private$linked_list[[e]] <-
-                                list(count = 1, link = NULL)
-                            private$linked_list[[last]]$link <- e
+                            new_node <- Node$new(data = list(
+                                value = e,
+                                count = 1
+                            ), link = NULL)
+                            last$link <- new_node
                             break
                         }
                     }
