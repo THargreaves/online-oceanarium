@@ -1,48 +1,14 @@
-#' Create a streamer for sorting incoming data
-#'
-#' @description \code{Sorting} creates a streaming algorithm that can be used
-#' to sort incoming data
-#'
-#' @docType class
-#'
-#' @examples
-#' sorter <- Sorting$new(c(3, 1))
-#' mean$update(c(2, 4))
-#' mean$value()
-#' #> [1] 1 2 3 4
-#'
-#' @export
-#' @format An \code{\link{R6Class}} generator object
-# TODO: benchmark this against simple insertion
-# TODO: create custom hash table to support non-character input
-Sorting <- R6::R6Class("Sorting", public = list(
-    #' @description Creates a new \code{Sorting} streamer object.
-    #'
-    #' @param x values to be used during initialisation (optional)
-    #' @param method the method used to sort values
-    #'
-    #' @return The new \code{Sorting} (invisibly)
+LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
     initialize = function(x = NULL) {
         if (!is.null(x)) {
             private$insert_values(x)
         }
         invisible(self)
     },
-    #' @description Resets the \code{CMA} streamer object.
-    #'
-    #' @param x values to be added to the stream
-    #'
-    #' @examples
-    #' mean <- CMA$new()
-    #' mean$update(c(1, 2))
-    #'
-    #' @return The updated \code{CMA} (invisibly)
     update = function(x) {
         private$insert_values(x)
+        invisible(self)
     },
-    #' @description Returns the current value of the mean.
-    #'
-    #' @return The current value of the \code{Sorting}
     value = function() {
         value <- c()
         if (is.null(private$start)) {
@@ -100,5 +66,63 @@ Sorting <- R6::R6Class("Sorting", public = list(
             }
         }
     }
+)
+)
+
+#' Create a streamer for sorting incoming data
+#'
+#' @description \code{Sorting} creates a streaming algorithm that can be used
+#' to sort incoming data
+#'
+#' @docType class
+#'
+#' @examples
+#' sorter <- Sorting$new(c(3, 1))
+#' sorter$update(c(2, 4))
+#' sorter$value()
+#' #> [1] 1 2 3 4
+#'
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+# TODO: benchmark this against simple insertion
+Sorting <- R6::R6Class("Sorting", public = list(
+    #' @description Creates a new \code{Sorting} streamer object.
+    #'
+    #' @param x values to be used during initialisation (optional)
+    #' @param method the method used to sort values
+    #'
+    #' @return The new \code{Sorting} (invisibly)
+    initialize = function(x = NULL, method = "linked-list") {
+        methods <- names(private$method_lookup)
+        if (!method %in% methods) {
+            stop(paste(
+                "method must be one of",
+                paste(methods, collaps = ", ")
+            ))
+        }
+        private$sorter <- private$method_lookup[[method]]$new(x)
+        invisible(self)
+    },
+    #' @description Updates the \code{Sorting} streamer object.
+    #'
+    #' @param x values to be added to the stream
+    #'
+    #' @return The updated \code{Sorting} (invisibly)
+    update = function(x) {
+        private$sorter$update(x)
+        invisible(self)
+    },
+    #' @description Returns the current value of the \code{Sorting}.
+    #'
+    #' @return The current value of the \code{Sorting}
+    value = function() {
+        private$sorter$value()
+    }
+), private = list(
+    method_lookup = list(
+        `linked-list` = LinkedListSorting,
+        `array` = NULL
+    ),
+    sorter = NULL
 )
 )
