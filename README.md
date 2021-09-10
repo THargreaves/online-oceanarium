@@ -17,10 +17,9 @@ In short, online algorithms process their input one piece at a time; a desirable
 
 The focus of this package is largely on online algorithms used for:
 
-- Machine learning
+- Machine learning (including reinforcement learning)
 - Statistics
 - Data processing
-- Reinforcement learning
 
 We hope that this package can be used for both the practical application of online algorithms as well as a demonstration of the implementation of such methods for educational purposes.
 
