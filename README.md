@@ -30,6 +30,7 @@ The package is composed of multiple [R6 classes](https://adv-r.hadley.nz/r6.html
 For example, a simple streamer for calculating a running mean is below (note `CMA` stands for cumulative moving average).
 
 ```r
+library(onlineoceanarium)
 mean <- CMA$new(c(1, 2))
 mean$value()
 #> [1] 1.5
