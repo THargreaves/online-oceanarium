@@ -2,10 +2,10 @@
 
 [![Language](https://img.shields.io/badge/Language-R_(4.1.0%2B)-orange.svg)](https://www.r-project.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![R-CMD-check](https://github.com/THargreaves/onlineoceanarium/workflows/R-CMD-check/badge.svg)](https://github.com/THargreaves/onlineoceanarium/actions)
-[![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](http://thargreaves.github.io/onlineoceanarium/)
-[![Code Quality](https://github.com/THargreaves/onlineoceanarium/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-[![Code Coverage](https://img.shields.io/codecov/c/github/THargreaves/onlineoceanarium)](https://app.codecov.io/gh/THargreaves/onlineoceanarium/)
+[![R-CMD-check](https://github.com/THargreaves/online-oceanarium/workflows/R-CMD-check/badge.svg)](https://github.com/THargreaves/online-oceanarium/actions)
+[![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](http://thargreaves.github.io/online-oceanarium/)
+[![Code Quality](https://github.com/THargreaves/online-oceanarium/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Code Coverage](https://img.shields.io/codecov/c/github/THargreaves/online-oceanarium)](https://app.codecov.io/gh/THargreaves/online-oceanarium/)
 
 ## Overview
 
