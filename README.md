@@ -1,7 +1,10 @@
 # Online Oceanarium
 
-[![Language](https://img.shields.io/badge/Language-R_(4.1.0%2B)-orange.svg)](https://www.r-project.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Language](https://img.shields.io/badge/language-R_(4.1.0%2B)-orange.svg?style=flat-square)](https://www.r-project.org/)
+[![Language](https://img.shields.io/badge/language-R_(4.1.0%2B)-orange.svg?style=flat-square)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Code Style](https://img.shields.io/badge/code%20style-tidyverse-informational?style=flat-square)](https://style.tidyverse.org)
+
 [![R-CMD-check](https://github.com/THargreaves/online-oceanarium/workflows/R-CMD-check/badge.svg)](https://github.com/THargreaves/online-oceanarium/actions)
 [![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](http://thargreaves.github.io/online-oceanarium/)
 [![Code Quality](https://github.com/THargreaves/online-oceanarium/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
