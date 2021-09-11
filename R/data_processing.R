@@ -1,5 +1,7 @@
 ArraySorting <- R6::R6Class("ArraySorting", public = list(
     initialize = function(x = NULL) {
+        # Reset if already contains values
+        private$sorted_values <- c()
         if (!is.null(x)) {
             private$insert_values(x)
         }
@@ -53,6 +55,8 @@ Node <- R6::R6Class("Node", public = list(
 
 LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
     initialize = function(x = NULL) {
+        # Reset if already contains values
+        private$head <- NULL
         if (!is.null(x)) {
             private$insert_values(x)
         }
@@ -90,11 +94,10 @@ LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
                 ), NULL)
             # New value proceeds linked list
             } else if (e < private$head$data$value) {
-                new_head <- private$head <- Node$new(data = list(
+                private$head <- private$head <- Node$new(data = list(
                     value = e,
                     count = 1
                 ), link = private$head)
-                private$head <- new_head
             }
             else {
                 # Traverse linked list to see where to insert
