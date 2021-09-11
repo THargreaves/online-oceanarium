@@ -1,7 +1,6 @@
 # Online Oceanarium
 
 [![Language](https://img.shields.io/badge/language-R_(4.1.0%2B)-orange.svg?style=flat-square)](https://www.r-project.org/)
-[![Language](https://img.shields.io/badge/language-R_(4.1.0%2B)-orange.svg?style=flat-square)](https://www.r-project.org/)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Code Style](https://img.shields.io/badge/code%20style-tidyverse-informational?style=flat-square)](https://style.tidyverse.org)
 
