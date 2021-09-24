@@ -11,27 +11,19 @@ test_that("CMA provides correct results", {
     expect_identical(mean$value(), 2)
 })
 
-test_that("SMA provides correct results", {
-    # Empty streamer
-    mean <- SMA$new(window = 3)
-    expect_identical(mean$value(), 0)
-    # Short window initialisation
-    mean <- SMA$new(c(1, 2, 3), window = 2)
-    expect_identical(mean$value(), 2.5)
-    # Same window initialisation
-    mean <- SMA$new(c(1, 2, 3), window = 3)
-    expect_identical(mean$value(), 2)
-    # Long window initialisation
-    mean <- SMA$new(c(1, 2, 3), window = 4)
-    # TODO: See issue #8
-    # expect_identical(mean$value(), 2)
-    # Updating short
-    mean$update(c(4, 5))
-    expect_identical(mean$value(), 3.5)
-    # Updating same
-    mean$update(c(1, 2, 3, 4))
-    expect_identical(mean$value(), 2.5)
-    # Updating long
-    mean$update(c(1, 2, 3, 4, 5))
-    expect_identical(mean$value(), 3.5)
+test_that("ReservoirSampler produces valid samples", {
+    # Sampling 2 elements from 4
+    # Each sample should appear roughly 1/6 of the time
+    samples <- c()
+    for (i in 1:2000) {
+        set.seed(i)
+        sampler <- ReservoirSampler$new(k = 2)
+        for (x in 1:4) {
+            sampler$update(x)
+        }
+        samples <- append(samples, paste(sort(sampler$value()),
+                                         collapse = ""))
+    }
+    props <- prop.table(table(samples))
+    expect_equal(as.numeric(props), rep(1 / 6, 6), tolerance = 10e-2)
 })
