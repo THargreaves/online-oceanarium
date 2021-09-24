@@ -1,11 +1,13 @@
 # Online Oceanarium
 
-[![Language](https://img.shields.io/badge/Language-R_(4.1.0%2B)-orange.svg)](https://www.r-project.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![R-CMD-check](https://github.com/THargreaves/onlineoceanarium/workflows/R-CMD-check/badge.svg)](https://github.com/THargreaves/onlineoceanarium/actions)
-[![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](http://thargreaves.github.io/onlineoceanarium/)
-[![Code Quality](https://github.com/THargreaves/onlineoceanarium/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-[![Code Coverage](https://img.shields.io/codecov/c/github/THargreaves/onlineoceanarium)](https://app.codecov.io/gh/THargreaves/onlineoceanarium/)
+[![Language](https://img.shields.io/badge/language-R_(4.1.0%2B)-orange.svg?style=flat-square)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Code Style](https://img.shields.io/badge/code%20style-tidyverse-informational?style=flat-square)](https://style.tidyverse.org)
+
+[![R-CMD-check](https://github.com/THargreaves/online-oceanarium/workflows/R-CMD-check/badge.svg)](https://github.com/THargreaves/online-oceanarium/actions)
+[![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](http://thargreaves.github.io/online-oceanarium/)
+[![Code Quality](https://github.com/THargreaves/online-oceanarium/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Code Coverage](https://img.shields.io/codecov/c/github/THargreaves/online-oceanarium)](https://app.codecov.io/gh/THargreaves/online-oceanarium/)
 
 ## Overview
 
@@ -13,24 +15,26 @@
 
 Online Oceanarium is an esoteric R package collecting examples of [online algorthms](https://en.wikipedia.org/wiki/Online_algorithm) (also known as streaming algorithms).
 
-In short, online algorithms process their input one piece at a time; a desirable property when processing an ammount of data that is too large to store in memory. This is also useful when data is streamed from a sensor or updating data source and you wish to update your algorithms state without running from scratch.
+In short, online algorithms process their input one piece at a time; a desirable property when processing an ammount of data that is too large to store in memory.
+This is also useful when data is streamed from a sensor or updating data source and you wish to update your algorithms state without running from scratch.
 
 The focus of this package is largely on online algorithms used for:
 
-- Machine learning
+- Machine learning (including reinforcement learning)
 - Statistics
 - Data processing
-- Reinforcement learning
 
 We hope that this package can be used for both the practical application of online algorithms as well as a demonstration of the implementation of such methods for educational purposes.
 
 ## Package Design
 
-The package is composed of multiple [R6 classes](https://adv-r.hadley.nz/r6.html), each corresponding to a particular online algorithm. An instance of these classes is called a _streamer_ and has three core public methods: `initialize`, `update`, `value`. Respectively, these are used to create a new streamer with initial values (by calling `<class>$new()`), update the state of the streamer by providing new data, and return the current value of the algorithm.
+The package is composed of multiple [R6 classes](https://adv-r.hadley.nz/r6.html), each corresponding to a particular online algorithm. An instance of these classes is called a _streamer_ and has three core public methods: `initialize`, `update`, `value`.
+Respectively, these are used to create a new streamer with initial values (by calling `<class>$new()`), update the state of the streamer by providing new data, and return the current value of the algorithm.
 
 For example, a simple streamer for calculating a running mean is below (note `CMA` stands for cumulative moving average).
 
 ```r
+library(onlineoceanarium)
 mean <- CMA$new(c(1, 2))
 mean$value()
 #> [1] 1.5

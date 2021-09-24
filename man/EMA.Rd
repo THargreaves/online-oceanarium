@@ -92,7 +92,7 @@ Returns the current value of the EMA.
 }
 
 \subsection{Returns}{
-The updated \code{EMA} (invisibly)
+The current value of the \code{EMA} (invisibly)
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
