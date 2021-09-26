@@ -401,6 +401,92 @@ Variance <- R6::R6Class("Variance", public = list(
 )
 )
 
-
-
-
+#' Create a streamer for producing a random sample from a population
+#'
+#' @description \code{ReservoirSampler} creates a streaming algorithm that can
+#' be used to obtain a random sample from a population that is too large to
+#' fit in memory. The samples can be made reproducible can be using
+#' `set.seed(...)` before initialising the streamer.
+#'
+#' Implementation is based on doi:10.1145/198429.198435.
+#'
+#' @docType class
+#'
+#' @examples
+#' sampler <- ReservoirSampler$new(k = 10)
+#' for (i in 1:100) {
+#'     sampler$update(i)
+#' }
+#' len(sampler$value())  # random sample from 1:100 of size 10
+#' #> [1] 10
+#'
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+ReservoirSampler <- R6::R6Class("ReservoirSampler", public = list(
+    #' @description Creates a new \code{ReservoirSampler} streamer object.
+    #'
+    #' @param k the desired sample size
+    #'
+    #' @return The new \code{ReservoirSampler} (invisibly)
+    initialize = function(k) {
+        private$k <- k
+        private$w <- 1
+        private$wait <- private$update_wait()
+        invisible(self)
+    },
+    #' @description Update the \code{ReservoirSampler} streamer object.
+    #'
+    #' @param x values to be added to the stream
+    #'
+    #' @return The updated \code{ReservoirSampler} (invisibly)
+    update = function(x) {
+        private$update_values(x)
+        invisible(self)
+    },
+    #' @description Returns the current random sample.
+    #'
+    #' @return The current sample of the \code{ReservoirSampler}
+    value = function() {
+        if (length(private$reservoir) < private$k) {
+            stop("population must be at least size k")
+        }
+        private$reservoir
+    }
+), private = list(
+    k = NULL,
+    w = NULL,  # used to generate `wait` according to doi:10.1145/198429.198435
+    wait = NULL,  # number of inputs to ignore before replacing reservoir value
+    reservoir = c(),
+    update_wait = function() {
+        private$w <- private$w * exp(log(runif(1)) / private$k)
+        floor(log(runif(1)) / log(1 - private$w)) + 1
+    },
+    update_values = function(x) {
+        l <- length(private$reservoir)
+        k <- private$k
+        # Fill reservoir if smaller than k
+        if (l < k) {
+            private$reservoir <- append(private$reservoir,
+                                        x[1:min(k - l, length(x))])
+            # Continue recursively on remaining elements
+            if (length(x) - (k - l) > 0) {
+                private$update_values(x[(k - l + 1):length(x)])
+            }
+        } else {
+            # Wait is longer than input
+            if (private$wait > length(x)) {
+                private$wait <- private$wait - length(x)
+            # Replace random element in reservoir with input and reset wait
+            } else {
+                s <- private$wait
+                private$reservoir[sample(1:k, 1)] <- x[s]
+                private$wait <- private$update_wait()
+                # Continue recursively on remaining elements
+                if (length(x) - s > 0) {
+                    private$update_values(x[(s + 1):length(x)])
+                }
+            }
+        }
+    }
+)
+)

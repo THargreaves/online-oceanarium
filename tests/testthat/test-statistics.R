@@ -91,3 +91,20 @@ test_that("Variance provides correct results", {
     expect_identical(variance$value(), 2)
     expect_identical(variance$value(sample = TRUE), 2.5)
 })
+
+test_that("ReservoirSampler produces valid samples", {
+    # Sampling 2 elements from 4
+    # Each sample should appear roughly 1/6 of the time
+    samples <- c()
+    for (i in 1:2000) {
+        set.seed(i)
+        sampler <- ReservoirSampler$new(k = 2)
+        for (x in 1:4) {
+            sampler$update(x)
+        }
+        samples <- append(samples, paste(sort(sampler$value()),
+                                         collapse = ""))
+    }
+    props <- prop.table(table(samples))
+    expect_equal(as.numeric(props), rep(1 / 6, 6), tolerance = 10e-2)
+})
