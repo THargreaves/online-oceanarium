@@ -19,6 +19,7 @@ Suggests:
     pkgdown,
     testthat,
     covr,
+    DT,
 Enchances:
     # VSCode
     jsonlite,
