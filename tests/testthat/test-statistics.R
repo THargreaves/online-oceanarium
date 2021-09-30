@@ -107,4 +107,19 @@ test_that("ReservoirSampler produces valid samples", {
     }
     props <- prop.table(table(samples))
     expect_equal(as.numeric(props), rep(1 / 6, 6), tolerance = 10e-2)
+    # Add more elements than sample size
+    sampler <- ReservoirSampler$new(k = 2)
+    sampler$update(1:3)
+    # Add more elements than wait time
+    set.seed(1729)
+    sampler <- ReservoirSampler$new(k = 1)
+    sampler$update(1)
+    sampler$update(2:3)
+})
+
+test_that("ReservoirSampler handles errors", {
+    # Requesting sample before supplying enough elements
+    sampler <- ReservoirSampler$new(k = 2)
+    sampler$update(1)
+    expect_error(sampler$value())
 })
