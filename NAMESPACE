@@ -3,6 +3,8 @@
 export(CMA)
 export(EMA)
 export(LinearRegression)
+export(ReservoirSampler)
 export(SMA)
+export(Sorting)
 export(Variance)
 export(WMA)
