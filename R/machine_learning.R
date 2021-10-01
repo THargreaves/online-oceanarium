@@ -71,9 +71,6 @@ LinearRegression <- R6::R6Class("LinearRegression", public = list(
             private$woodbury_update(X, y)
         } else if (private$method == "sherman-morrison") {
             private$sherman_morrison_update(X, y)
-        } else {
-            # Should not be reached if private$valid_methods is correct
-            stop("invalid method")
         }
     },
     #' @description Returns the current coefficient vector.
