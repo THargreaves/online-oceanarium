@@ -185,8 +185,8 @@ fit in memory. The samples can be made reproducible can be using
 <span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span> <span class='op'>{</span>
     <span class='va'>sampler</span><span class='op'>$</span><span class='fu'>update</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span>
 <span class='op'>}</span>
-<span class='fu'>len</span><span class='op'>(</span><span class='va'>sampler</span><span class='op'>$</span><span class='fu'>value</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>  <span class='co'># random sample from 1:100 of size 10</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in len(sampler$value()): could not find function "len"</span></div><div class='input'><span class='co'>#&gt; [1] 10</span>
+<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>sampler</span><span class='op'>$</span><span class='fu'>value</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>  <span class='co'># random sample from 1:100 of size 10</span>
+</div><div class='output co'>#&gt; [1] 10</div><div class='input'><span class='co'>#&gt; [1] 10</span>
 
 </div></pre>
   </div>
