@@ -417,7 +417,7 @@ Variance <- R6::R6Class("Variance", public = list(
 #' for (i in 1:100) {
 #'     sampler$update(i)
 #' }
-#' len(sampler$value())  # random sample from 1:100 of size 10
+#' length(sampler$value())  # random sample from 1:100 of size 10
 #' #> [1] 10
 #'
 #' @export
