@@ -490,3 +490,193 @@ ReservoirSampler <- R6::R6Class("ReservoirSampler", public = list(
     }
 )
 )
+
+
+#' Create a streamer for the modified secretary problem based on maximising the
+#' expected score of a candidate when sampling from a known distribution
+#' of scores.
+#'
+#' @description \code{SecretarySampler} creates a streamer object to reject
+#'  or accept a candidate based on their score. The assumptions of the process
+#'  are as follows:
+#'  - we are allowed to make at most N successive draws from a hypothetical
+#'  population of candidates with a known distribution function of scores
+#'  - we are allowed to stop at the end of any draw and we gain the score of
+#'  the currently observed candidate minus the total cost of observing
+#'  all previous candidates
+#'  - if we decide to continue sampling, it is not possible to go back to
+#'  a previous candidate
+#'  - if we decide to stop or reach the last candidate, the process ends.
+#'
+#' Implementation is based on doi:10.1016/0022-247X(61)90023-3
+#'
+#' @docType class
+#'
+#' @examples
+#' set.seed(0)
+#' candidate_scores <- rexp(10, rate = 1)
+#' distr = list(df = "exp", rate = 1)
+#' secretary <- SecretarySampler$new(10, c = 0, distr = distr)
+#' i <- 1
+#' while(secretary$value()$state == "CONTINUE" and i <= length(candidate_scores)) {
+#'    secretary$update(candidate_scores[i])
+#'    i <- i + 1
+#' }
+#' secretary$value()
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
+    #' @description Creates a new \code{SecretarySampler} streamer object.
+    #'
+    #' @param N the maximum number of candidates to consider
+    #' @param c the cost of observing one candidate
+    #' @param distr list specifying the distribution of candidate scores
+    #'
+    #' @examples
+    #' distr <- list(df = "exp", "rate" = 1)
+    #' secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
+    #'
+    #' @return The new \code{SecretarySampler} (invisibly)
+    initialize = function(N, c = 0, distr) {
+        if (c < 0) {
+            stop("Observation cost must be non-negative")
+        }
+        if (!(N > 0 && N %% 1 == 0)) {
+            stop("The total number of candidates must be a positive integer")
+        }
+        private$N <- N
+        private$c <- c
+        private$state <- "CONTINUE"
+        private$distr <- distr
+        private$critical_values <- private$find_critical_values(N, c, distr)
+        private$n_observed <- 0
+        if (private$critical_values[N] - c < 0) {
+            private$state <- "STOP"
+            stop("It is not optimal to start sampling. Check the value of c")
+        }
+        invisible(self)
+    },
+    #' @description Update the \code{SecretarySampler} streamer object.
+    #'
+    #' @param x a single observed score of a candidate
+    #'
+    #' @examples
+    #' secretary$update(2.5)
+    #'
+    #' @return The updated \code{SecretarySampler} (invisibly)
+    update = function(x) {
+        if (length(x) > 1) {
+            stop("Only single-value allowed in one step")
+        }
+        if (private$state == "STOP") {
+            warning("Candidate already chosen")
+            invisible(self)
+        }
+        private$n_observed <- private$n_observed + 1
+        n_left <- private$N - private$n_observed
+        # Accept if score greater than the critical value - cost
+        # for the last candidate accept any non-negative score
+        if ((private$n_observed == private$N) ||
+            x > private$critical_values[n_left] - private$c) {
+            private$state <- "STOP"
+            if (x > 0) {
+                private$optimal_score <- x
+            }
+        }
+        invisible(self)
+    },
+    #' @description Returns the state of the \code{SecretarySampler}
+    #'
+    #' @return list with summary of the state of the secretary object.
+    #'
+    #' @examples
+    #' secretary$value()$state
+    #' #> [1] "STOP"
+    value = function() {
+        value <- list(
+            state = private$state,
+            score = private$optimal_score,
+            n_observed = private$n_observed,
+            total_cost = private$n_observed * private$c,
+            critical_values = private$critical_values
+        )
+        return(value)
+    }
+), private = list(
+    N = NULL,
+    c = NULL,
+    distr = c(),
+    critical_values = c(),
+    n_observed = NULL,
+    state = NULL,
+    optimal_score = NULL,
+    #' Calculates A(x) as in doi:10.1016/0022-247X(61)90023-3
+    find_a = function(x, distr) {
+        df <- distr["df"]
+        # find the values of A(x)
+        if (df == "norm") {
+            a <- (dnorm(x) - x * (1 - pnorm(x)))
+        } else if (df == "exp") {
+            rate <-  as.numeric(distr["rate"])
+            a <- (1 / rate) * exp(-x * rate)
+        } else if (df == "pois") {
+            rate <-  as.numeric(distr["rate"])
+            a <- rate * private$pois_cdf(floor(x), rate)
+                - x * private$pois_cdf(floor(x) + 1, rate)
+        }
+        return(a)
+    },
+    #' Used to find the mean of a distribution
+    find_mean = function(distr) {
+        df <- distr["df"]
+        if (df == "norm") {
+            mean <- 0
+        } else if (df == "exp") {
+            mean <- 1 / as.numeric(distr["rate"])
+        } else if (df == "pois") {
+            mean <- as.numeric(distr["rate"])
+        }
+        return(mean)
+    },
+    #' Used to find the values determining the optimal stopping criterion.
+    find_critical_values = function(N, c, distr) {
+        private$check_distr(distr)  # check the parameters of distribution
+        mu <- c(private$find_mean(distr))  # initialize with the mean of distr
+        for (i in seq(1, N - 1)) { # dynamically calculate the critical values
+            mu[i + 1] <- private$find_a(mu[i] - c, distr) + mu[i] - c
+        }
+        return(mu)
+    },
+    #' Performs validity checks for the parameters of the distribution
+    check_distr = function(distr) {
+        # check df
+        df <- distr["df"]
+        available_df <- c("norm", "exp", "pois")
+        if (is.null(df)) {
+            stop("distribution function \"df\" is missing, with no default")
+        } else if (!(df %in% available_df)) {
+            stop(paste("distribution function \"df\" must be in one of: ",
+                     available_df))
+        }
+        #check params of dist
+        if (df %in% c("exp", "pois")) {
+            if (is.null(distr["rate"])) {
+                stop("parameter \"rate\" is missing, with no default")
+            }
+            if (as.numeric(distr["rate"] <= 0)) {
+                stop("rate must take positive values")
+            }
+        }
+    },
+    #' Function the upper tail of poisson cdf
+    pois_cdf = function(k, rate) {
+        if (k == 0) {
+            cdf <- 1
+        } else {
+            seq <- seq(0, k - 1)
+            cdf <- 1 - sum(rate^seq / factorial(seq)) * exp(-rate)
+        }
+        return(cdf)
+    }
+)
+)

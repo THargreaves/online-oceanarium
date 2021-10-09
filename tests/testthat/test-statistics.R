@@ -123,3 +123,92 @@ test_that("ReservoirSampler handles errors", {
     sampler$update(1)
     expect_error(sampler$value())
 })
+
+test_that("SecretarySampler is correctly initialised", {
+    distr <- list(df = "norm")
+    N <- 10
+    secretary <- SecretarySampler$new(N = N, c = 0.1, distr = distr)
+    expect_null(secretary$value()$score)
+    expect_equal(secretary$value()$state, "CONTINUE")
+})
+
+test_that("SecretarySampler is not initialised for cost too big", {
+    distr <- list(df = "norm")
+    N <- 10
+    expect_error(SecretarySampler$new(N = N, c = 1, distr = distr))
+})
+
+test_that("SecretarySampler produces correct critical values for normal dist", {
+    distr <- list(df = "norm")
+    N <- 10
+    secretary <- SecretarySampler$new(N = N, c = 0, distr = distr)
+    expected_cv <- c(0.000, 0.399, 0.630, 0.790, 0.913, 1.011,
+                     1.092, 1.162, 1.223, 1.276)
+    cv <- round(secretary$value()$critical_values, 3)
+    expect_equal(expected_cv, cv, tolerance = 10e-3)
+})
+
+test_that("SecretarySampler produces correct critical values for exp dist", {
+    distr <- list(df = "exp", rate = 1)
+    N <- 10
+    secretary <- SecretarySampler$new(N = N, c = 0, distr = distr)
+    expected_cv <- c(1.000, 1.368, 1.623, 1.820, 1.982, 2.120,
+                     2.240, 2.346, 2.442, 2.529)
+    cv <- round(secretary$value()$critical_values, 3)
+    expect_equal(expected_cv, cv, tolerance = 10e-3)
+})
+
+test_that("SecretarySampler produces correct critical values for pois dist", {
+    distr <- list(df = "pois", rate = 1)
+    N <- 10
+    secretary <- SecretarySampler$new(N = N, c = 0, distr = distr)
+    expected_cv <- c(1.000, 1.632, 2.264, 2.528, 2.793, 3.057,
+                     3.137, 3.218, 3.298, 3.378)
+    cv <- round(secretary$value()$critical_values, 3)
+    expect_equal(expected_cv, cv, tolerance = 10e-3)
+})
+
+test_that("SecretarySampler passes through all scores without choosing
+          the last candidate with negative score", {
+    distr <- list(df = "norm")
+    scores <- runif(10, -1, 0)
+    secretary <- SecretarySampler$new(N = length(scores), c = 0, distr = distr)
+    i <- 1
+    while (secretary$value()$state == "CONTINUE"
+          || i <= length(scores)) {
+        secretary$update(scores[i])
+        i <- i + 1
+    }
+    expect_null(secretary$value()$score)
+    expect_equal(secretary$value()$state, "STOP")
+    expect_equal(secretary$value()$n_observed, length(scores))
+})
+
+test_that("SecretarySampler passes through all scores and is forced to
+          choose the last candidate.", {
+    distr <- list(df = "norm")
+    scores <- runif(10, -1, 0)
+    scores <- c(scores, 0.1)
+    secretary <- SecretarySampler$new(N = length(scores), c = 0, distr = distr)
+    i <- 1
+    while (secretary$value()$state == "CONTINUE"
+         || i <= length(scores)) {
+      secretary$update(scores[i])
+      i <- i + 1
+    }
+    expect_equal(secretary$value()$score, 0.1)
+    expect_equal(secretary$value()$state, "STOP")
+    expect_equal(secretary$value()$n_observed, length(scores))
+})
+
+test_that("SecretarySampler handles distribution mispecifications", {
+    # wrong type of dist
+    expect_error(SecretarySampler$new(N = 1, c = 0,
+                                      distr = list(df = "binom")))
+    # rate not specified
+    expect_error(SecretarySampler$new(N = 1, c = 0,
+                                      distr = list(df = "exp")))
+    # rate is negative
+    expect_error(SecretarySampler$new(N = 1, c = 0,
+                                      distr = list(df = "exp", rate = -2)))
+})
