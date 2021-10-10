@@ -30,7 +30,8 @@ candidate_scores <- rexp(10, rate = 1)
 distr = list(df = "exp", rate = 1)
 secretary <- SecretarySampler$new(10, c = 0, distr = distr)
 i <- 1
-while(secretary$value()$state == "CONTINUE" and i <= length(candidate_scores)) {
+while(secretary$value()$state == "CONTINUE"
+    || i <= length(candidate_scores)) {
    secretary$update(candidate_scores[i])
    i <- i + 1
 }
@@ -57,11 +58,7 @@ secretary$update(2.5)
 
 secretary$value()$state
 #> [1] "STOP"
-Calculates A(x) as in doi:10.1016/0022-247X(61)90023-3
-Used to find the mean of a distribution
-Used to find the values determining the optimal stopping criterion.
-Performs validity checks for the parameters of the distribution
-Function the upper tail of poisson cdf
+
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -151,11 +148,7 @@ list with summary of the state of the secretary object.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{secretary$value()$state
 #> [1] "STOP"
-Calculates A(x) as in doi:10.1016/0022-247X(61)90023-3
-Used to find the mean of a distribution
-Used to find the values determining the optimal stopping criterion.
-Performs validity checks for the parameters of the distribution
-Function the upper tail of poisson cdf
+
 }
 \if{html}{\out{</div>}}
 

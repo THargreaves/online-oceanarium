@@ -201,7 +201,19 @@ test_that("SecretarySampler passes through all scores and is forced to
     expect_equal(secretary$value()$n_observed, length(scores))
 })
 
+test_that("SecretarySampler correclty handles length and cost errors", {
+    # zero length
+    expect_error(SecretarySampler$new(N = 0, c = 0,
+                                      distr = list()))
+    # negative cost
+    expect_error(SecretarySampler$new(N = 0, c = -2,
+                                      distr = list()))
+})
+
 test_that("SecretarySampler handles distribution mispecifications", {
+    # df not specified
+    expect_error(SecretarySampler$new(N = 1, c = 0,
+                                      distr = list()))
     # wrong type of dist
     expect_error(SecretarySampler$new(N = 1, c = 0,
                                       distr = list(df = "binom")))
@@ -211,4 +223,21 @@ test_that("SecretarySampler handles distribution mispecifications", {
     # rate is negative
     expect_error(SecretarySampler$new(N = 1, c = 0,
                                       distr = list(df = "exp", rate = -2)))
+})
+
+test_that("SecretarySampler does not update if candidate already chosen", {
+    distr <- list(df = "norm")
+    secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
+    secretary$update(5)  # candidate should be chosen
+    expect_warning(secretary$update(4))  # no update
+    expect_equal(secretary$value()$state, "STOP")
+    expect_equal(secretary$value()$score, 5)
+    expect_equal(secretary$value()$n_observed, 1)
+})
+
+
+test_that("SecretarySampler update accepts only sinlge values", {
+    distr <- list(df = "norm")
+    secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
+    expect_error(secretary$update(c(1,2,3)))  # candidate should be chosen
 })

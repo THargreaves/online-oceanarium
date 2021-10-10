@@ -518,7 +518,8 @@ ReservoirSampler <- R6::R6Class("ReservoirSampler", public = list(
 #' distr = list(df = "exp", rate = 1)
 #' secretary <- SecretarySampler$new(10, c = 0, distr = distr)
 #' i <- 1
-#' while(secretary$value()$state == "CONTINUE" and i <= length(candidate_scores)) {
+#' while(secretary$value()$state == "CONTINUE"
+#'     || i <= length(candidate_scores)) {
 #'    secretary$update(candidate_scores[i])
 #'    i <- i + 1
 #' }
@@ -570,28 +571,28 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
         }
         if (private$state == "STOP") {
             warning("Candidate already chosen")
-            invisible(self)
-        }
-        private$n_observed <- private$n_observed + 1
-        n_left <- private$N - private$n_observed
-        # Accept if score greater than the critical value - cost
-        # for the last candidate accept any non-negative score
-        if ((private$n_observed == private$N) ||
-            x > private$critical_values[n_left] - private$c) {
-            private$state <- "STOP"
-            if (x > 0) {
-                private$optimal_score <- x
+        } else {
+            private$n_observed <- private$n_observed + 1
+            n_left <- private$N - private$n_observed
+            # Accept if score greater than the critical value - cost
+            # for the last candidate accept any non-negative score
+            if ((private$n_observed == private$N) ||
+                x > private$critical_values[n_left] - private$c) {
+                private$state <- "STOP"
+                if (x > 0) {
+                    private$optimal_score <- x
+                }
             }
         }
         invisible(self)
     },
     #' @description Returns the state of the \code{SecretarySampler}
     #'
-    #' @return list with summary of the state of the secretary object.
-    #'
     #' @examples
     #' secretary$value()$state
     #' #> [1] "STOP"
+    #'
+    #' @return list with summary of the state of the secretary object.
     value = function() {
         value <- list(
             state = private$state,
@@ -610,7 +611,7 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
     n_observed = NULL,
     state = NULL,
     optimal_score = NULL,
-    #' Calculates A(x) as in doi:10.1016/0022-247X(61)90023-3
+    # Calculates A(x) as in doi:10.1016/0022-247X(61)90023-3
     find_a = function(x, distr) {
         df <- distr["df"]
         # find the values of A(x)
@@ -626,7 +627,7 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
         }
         return(a)
     },
-    #' Used to find the mean of a distribution
+    # Used to find the mean of a distribution
     find_mean = function(distr) {
         df <- distr["df"]
         if (df == "norm") {
@@ -638,7 +639,7 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
         }
         return(mean)
     },
-    #' Used to find the values determining the optimal stopping criterion.
+    # Used to find the values determining the optimal stopping criterion.
     find_critical_values = function(N, c, distr) {
         private$check_distr(distr)  # check the parameters of distribution
         mu <- c(private$find_mean(distr))  # initialize with the mean of distr
@@ -647,7 +648,7 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
         }
         return(mu)
     },
-    #' Performs validity checks for the parameters of the distribution
+    # Performs validity checks for the parameters of the distribution
     check_distr = function(distr) {
         # check df
         df <- distr["df"]
@@ -660,15 +661,14 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
         }
         #check params of dist
         if (df %in% c("exp", "pois")) {
-            if (is.null(distr["rate"])) {
+            if (is.null(distr$rate)) {
                 stop("parameter \"rate\" is missing, with no default")
-            }
-            if (as.numeric(distr["rate"] <= 0)) {
+            } else if (as.numeric(distr$rate) <= 0) {
                 stop("rate must take positive values")
             }
         }
     },
-    #' Function the upper tail of poisson cdf
+    # Function the upper tail of poisson cdf
     pois_cdf = function(k, rate) {
         if (k == 0) {
             cdf <- 1
