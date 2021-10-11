@@ -117,8 +117,8 @@ mean$update(c(4, 5))
 \subsection{Method \code{value()}}{
 Returns the current value of the average.
 
-If the number of values in the stream is less than the size of the window,
-the returned values is the mean of the entire stream of data.
+If the number of values in the stream is less than the size of
+the window, the returned values is the mean of the entire stream of data.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SMA$value()}\if{html}{\out{</div>}}
 }

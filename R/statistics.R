@@ -91,7 +91,7 @@ SMA <- R6::R6Class("SMA", public = list(
     #' @return The new \code{SMA} (invisibly)
     initialize = function(x = NULL, window = NULL) {
         private$check_window_size(window)
-        private$window = window
+        private$window <- window
         if (!is.null(x)) {
             if (window >= length(x)) {
                 private$values <- x
@@ -126,8 +126,8 @@ SMA <- R6::R6Class("SMA", public = list(
     },
     #' @description Returns the current value of the average.
     #'
-    #' If the number of values in the stream is less than the size of the window,
-    #' the returned values is the mean of the entire stream of data.
+    #' If the number of values in the stream is less than the size of
+    #' the window, the returned values is the mean of the entire stream of data.
     #'
     #' @examples
     #' mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
@@ -297,17 +297,19 @@ EMA <- R6::R6Class("EMA", public = list(
     update_values = function(x) {
         k <- length(x)
         valpha <- rep((1 - private$alpha), k) ** seq(k - 1, 0)
-        private$weighted_sum <- valpha %*% x + (1 - private$alpha)**k * private$weighted_sum
+        private$weighted_sum <- valpha %*% x +
+            (1 - private$alpha)**k * private$weighted_sum
         private$count <- private$count + k
-        private$weighted_count <- (1 - (1 - private$alpha)**private$count) / private$alpha
+        private$weighted_count <- (1 - (1 - private$alpha)**private$count)
+        private$weighted_count <- private$weighted_count / private$alpha
     }
 )
 )
 
 #' Create a streamer for calculating the population and sample variance
 #'
-#' @description \code{Variance} creates a streaming algorithm that can be used to
-#' calculate the population and sample variance of incoming values
+#' @description \code{Variance} creates a streaming algorithm that can be
+#' used to calculate the population and sample variance of incoming values
 #'
 #'
 #' @docType class
@@ -335,7 +337,7 @@ Variance <- R6::R6Class("Variance", public = list(
             private$sum <- private$sum + sum(x)
             private$count <- private$count + length(x)
             mean <- private$sum / private$count
-            private$variance <- 1/private$count * sum((x - mean)**2)
+            private$variance <- 1 / private$count * sum((x - mean)**2)
         }
         invisible(self)
     },
@@ -388,7 +390,8 @@ Variance <- R6::R6Class("Variance", public = list(
         denominators <- n * seq(n - k, n - 1)
         coefs <- numerators / denominators
 
-        private$variance <- (n - k)/n * private$variance + coefs %*% (x - means)**2
+        private$variance <- (n - k) / n * private$variance +
+            coefs %*% (x - means)**2
         private$sum <- private$sum + sum(x)
         private$count <- n
 
@@ -487,6 +490,195 @@ ReservoirSampler <- R6::R6Class("ReservoirSampler", public = list(
                 }
             }
         }
+    }
+)
+)
+
+
+#' Create a streamer for the modified secretary problem based on maximising the
+#' expected score of a candidate when sampling from a known distribution
+#' of scores.
+#'
+#' @description \code{SecretarySampler} creates a streamer object to reject
+#'  or accept a candidate based on their score. The assumptions of the process
+#'  are as follows:
+#'  - we are allowed to make at most N successive draws from a hypothetical
+#'  population of candidates with a known distribution function of scores
+#'  - we are allowed to stop at the end of any draw and we gain the score of
+#'  the currently observed candidate minus the total cost of observing
+#'  all previous candidates
+#'  - if we decide to continue sampling, it is not possible to go back to
+#'  a previous candidate
+#'  - if we decide to stop or reach the last candidate, the process ends.
+#'
+#' Implementation is based on doi:10.1016/0022-247X(61)90023-3
+#'
+#' @docType class
+#'
+#' @examples
+#' set.seed(0)
+#' candidate_scores <- rexp(10, rate = 1)
+#' distr = list(func = "exp", rate = 1)
+#' secretary <- SecretarySampler$new(10, c = 0, distr = distr)
+#' i <- 1
+#' while(secretary$value()$state == "CONTINUE"
+#'     && i <= length(candidate_scores)) {
+#'    secretary$update(candidate_scores[i])
+#'    i <- i + 1
+#' }
+#' secretary$value()
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+SecretarySampler <- R6::R6Class("SecretarySampler", public = list(
+    #' @description Creates a new \code{SecretarySampler} streamer object.
+    #'
+    #' @param N the maximum number of candidates to consider
+    #' @param c the cost of observing one candidate
+    #' @param distr list specifying the distribution of candidate scores
+    #'
+    #' @examples
+    #' distr <- list(func = "exp", "rate" = 1)
+    #' secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
+    #'
+    #' @return The new \code{SecretarySampler} (invisibly)
+    initialize = function(N, c = 0, distr) {
+        if (c < 0) {
+            stop("Observation cost must be non-negative")
+        }
+        if (!(N > 0 && N %% 1 == 0)) {
+            stop("The total number of candidates must be a positive integer")
+        }
+        private$N <- N
+        private$c <- c
+        private$state <- "CONTINUE"
+        private$distr <- distr
+        private$critical_values <- private$find_critical_values(N, c, distr)
+        private$n_observed <- 0
+        if (private$critical_values[N] - c < 0) {
+            private$state <- "STOP"
+            stop("It is not optimal to start sampling. Check the value of c")
+        }
+        invisible(self)
+    },
+    #' @description Update the \code{SecretarySampler} streamer object.
+    #'
+    #' @param x a single observed score of a candidate
+    #'
+    #' @examples
+    #' secretary$update(2.5)
+    #'
+    #' @return The updated \code{SecretarySampler} (invisibly)
+    update = function(x) {
+        if (length(x) > 1) {
+            stop("Only single-value allowed in one step")
+        }
+        if (private$state == "STOP") {
+            stop("Candidate already chosen")
+        }
+        private$n_observed <- private$n_observed + 1
+        n_left <- private$N - private$n_observed
+        # Accept if score greater than the critical value - cost
+        # for the last candidate accept any non-negative score
+        if ((private$n_observed == private$N) ||
+            x > private$critical_values[n_left] - private$c) {
+            private$state <- "STOP"
+            if (x > 0) {
+                private$optimal_score <- x
+            }
+        }
+        invisible(self)
+    },
+    #' @description Returns the state of the \code{SecretarySampler}
+    #'
+    #' @examples
+    #' secretary$value()$state
+    #' #> [1] "STOP"
+    #'
+    #' @return list with summary of the state of the secretary object.
+    value = function() {
+        value <- list(
+            state = private$state,
+            score = private$optimal_score,
+            n_observed = private$n_observed,
+            total_cost = private$n_observed * private$c,
+            critical_values = private$critical_values
+        )
+        return(value)
+    }
+), private = list(
+    N = NULL,
+    c = NULL,
+    distr = c(),
+    critical_values = c(),
+    n_observed = NULL,
+    state = NULL,
+    optimal_score = NULL,
+    # Calculates A(x) as in doi:10.1016/0022-247X(61)90023-3
+    find_a = function(x, distr) {
+        func <- distr["func"]
+        # find the values of A(x)
+        if (func == "norm") {
+            a <- (dnorm(x) - x * (1 - pnorm(x)))
+        } else if (func == "exp") {
+            rate <-  as.numeric(distr["rate"])
+            a <- (1 / rate) * exp(-x * rate)
+        } else if (func == "pois") {
+            rate <-  as.numeric(distr["rate"])
+            a <- rate * private$pois_cdf(floor(x), rate)
+                - x * private$pois_cdf(floor(x) + 1, rate)
+        }
+        return(a)
+    },
+    # Used to find the mean of a distribution
+    find_mean = function(distr) {
+        func <- distr["func"]
+        if (func == "norm") {
+            mean <- 0
+        } else if (func == "exp") {
+            mean <- 1 / as.numeric(distr["rate"])
+        } else if (func == "pois") {
+            mean <- as.numeric(distr["rate"])
+        }
+        return(mean)
+    },
+    # Used to find the values determining the optimal stopping criterion.
+    find_critical_values = function(N, c, distr) {
+        private$check_distr(distr)  # check the parameters of distribution
+        mu <- c(private$find_mean(distr))  # initialize with the mean of distr
+        for (i in seq(1, N - 1)) { # dynamically calculate the critical values
+            mu[i + 1] <- private$find_a(mu[i] - c, distr) + mu[i] - c
+        }
+        return(mu)
+    },
+    # Performs validity checks for the parameters of the distribution
+    check_distr = function(distr) {
+        # check func
+        func <- distr["func"]
+        available_func <- c("norm", "exp", "pois")
+        if (is.null(func)) {
+            stop("distribution function \"func\" is missing, with no default")
+        } else if (!(func %in% available_func)) {
+            stop(paste("distribution function \"func\" must be in one of: ",
+                     available_func))
+        }
+        #check params of dist
+        if (func %in% c("exp", "pois")) {
+            if (is.null(distr$rate)) {
+                stop("parameter \"rate\" is missing, with no default")
+            } else if (as.numeric(distr$rate) <= 0) {
+                stop("rate must take positive values")
+            }
+        }
+    },
+    # Function the upper tail of poisson cdf
+    pois_cdf = function(k, rate) {
+        if (k == 0) {
+            cdf <- 1
+        } else {
+            seq <- seq(0, k - 1)
+            cdf <- 1 - sum(rate^seq / factorial(seq)) * exp(-rate)
+        }
+        return(cdf)
     }
 )
 )
