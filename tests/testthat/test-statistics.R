@@ -125,7 +125,7 @@ test_that("ReservoirSampler handles errors", {
 })
 
 test_that("SecretarySampler is correctly initialised", {
-    distr <- list(df = "norm")
+    distr <- list(func = "norm")
     N <- 10
     secretary <- SecretarySampler$new(N = N, c = 0.1, distr = distr)
     expect_null(secretary$value()$score)
@@ -133,13 +133,13 @@ test_that("SecretarySampler is correctly initialised", {
 })
 
 test_that("SecretarySampler is not initialised for cost too big", {
-    distr <- list(df = "norm")
+    distr <- list(func = "norm")
     N <- 10
     expect_error(SecretarySampler$new(N = N, c = 1, distr = distr))
 })
 
 test_that("SecretarySampler produces correct critical values for normal dist", {
-    distr <- list(df = "norm")
+    distr <- list(func = "norm")
     N <- 10
     secretary <- SecretarySampler$new(N = N, c = 0, distr = distr)
     expected_cv <- c(0.000, 0.399, 0.630, 0.790, 0.913, 1.011,
@@ -149,7 +149,7 @@ test_that("SecretarySampler produces correct critical values for normal dist", {
 })
 
 test_that("SecretarySampler produces correct critical values for exp dist", {
-    distr <- list(df = "exp", rate = 1)
+    distr <- list(func = "exp", rate = 1)
     N <- 10
     secretary <- SecretarySampler$new(N = N, c = 0, distr = distr)
     expected_cv <- c(1.000, 1.368, 1.623, 1.820, 1.982, 2.120,
@@ -159,7 +159,7 @@ test_that("SecretarySampler produces correct critical values for exp dist", {
 })
 
 test_that("SecretarySampler produces correct critical values for pois dist", {
-    distr <- list(df = "pois", rate = 1)
+    distr <- list(func = "pois", rate = 1)
     N <- 10
     secretary <- SecretarySampler$new(N = N, c = 0, distr = distr)
     expected_cv <- c(1.000, 1.632, 2.264, 2.528, 2.793, 3.057,
@@ -170,12 +170,12 @@ test_that("SecretarySampler produces correct critical values for pois dist", {
 
 test_that("SecretarySampler passes through all scores without choosing
           the last candidate with negative score", {
-    distr <- list(df = "norm")
+    distr <- list(func = "norm")
     scores <- runif(10, -1, 0)
     secretary <- SecretarySampler$new(N = length(scores), c = 0, distr = distr)
     i <- 1
     while (secretary$value()$state == "CONTINUE"
-          || i <= length(scores)) {
+          && i <= length(scores)) {
         secretary$update(scores[i])
         i <- i + 1
     }
@@ -186,7 +186,7 @@ test_that("SecretarySampler passes through all scores without choosing
 
 test_that("SecretarySampler passes through all scores and is forced to
           choose the last candidate.", {
-    distr <- list(df = "norm")
+    distr <- list(func = "norm")
     scores <- runif(10, -1, 0)
     scores <- c(scores, 0.1)
     secretary <- SecretarySampler$new(N = length(scores), c = 0, distr = distr)
@@ -211,25 +211,25 @@ test_that("SecretarySampler correclty handles length and cost errors", {
 })
 
 test_that("SecretarySampler handles distribution mispecifications", {
-    # df not specified
+    # func not specified
     expect_error(SecretarySampler$new(N = 1, c = 0,
                                       distr = list()))
     # wrong type of dist
     expect_error(SecretarySampler$new(N = 1, c = 0,
-                                      distr = list(df = "binom")))
+                                      distr = list(func = "binom")))
     # rate not specified
     expect_error(SecretarySampler$new(N = 1, c = 0,
-                                      distr = list(df = "exp")))
+                                      distr = list(func = "exp")))
     # rate is negative
     expect_error(SecretarySampler$new(N = 1, c = 0,
-                                      distr = list(df = "exp", rate = -2)))
+                                      distr = list(func = "exp", rate = -2)))
 })
 
 test_that("SecretarySampler does not update if candidate already chosen", {
-    distr <- list(df = "norm")
+    distr <- list(func = "norm")
     secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
     secretary$update(5)  # candidate should be chosen
-    expect_warning(secretary$update(4))  # no update
+    expect_error(secretary$update(4))  # no update
     expect_equal(secretary$value()$state, "STOP")
     expect_equal(secretary$value()$score, 5)
     expect_equal(secretary$value()$n_observed, 1)
@@ -237,7 +237,7 @@ test_that("SecretarySampler does not update if candidate already chosen", {
 
 
 test_that("SecretarySampler update accepts only sinlge values", {
-    distr <- list(df = "norm")
+    distr <- list(func = "norm")
     secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
-    expect_error(secretary$update(c(1,2,3)))  # candidate should be chosen
+    expect_error(secretary$update(c(1, 2, 3)))  # candidate should be chosen
 })

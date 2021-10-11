@@ -8,8 +8,8 @@
 An \code{\link{R6Class}} generator object
 }
 \description{
-\code{Variance} creates a streaming algorithm that can be used to
-calculate the population and sample variance of incoming values
+\code{Variance} creates a streaming algorithm that can be
+used to calculate the population and sample variance of incoming values
 }
 \examples{
 variance <- Variance$new(c(1, 2))

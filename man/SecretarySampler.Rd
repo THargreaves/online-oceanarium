@@ -27,11 +27,11 @@ Implementation is based on doi:10.1016/0022-247X(61)90023-3
 \examples{
 set.seed(0)
 candidate_scores <- rexp(10, rate = 1)
-distr = list(df = "exp", rate = 1)
+distr = list(func = "exp", rate = 1)
 secretary <- SecretarySampler$new(10, c = 0, distr = distr)
 i <- 1
 while(secretary$value()$state == "CONTINUE"
-    || i <= length(candidate_scores)) {
+    && i <= length(candidate_scores)) {
    secretary$update(candidate_scores[i])
    i <- i + 1
 }
@@ -41,7 +41,7 @@ secretary$value()
 ## Method `SecretarySampler$new`
 ## ------------------------------------------------
 
-distr <- list(df = "exp", "rate" = 1)
+distr <- list(func = "exp", "rate" = 1)
 secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
 
 
@@ -94,7 +94,7 @@ The new \code{SecretarySampler} (invisibly)
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{distr <- list(df = "exp", "rate" = 1)
+\preformatted{distr <- list(func = "exp", "rate" = 1)
 secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
 
 }

@@ -91,7 +91,7 @@ SMA <- R6::R6Class("SMA", public = list(
     #' @return The new \code{SMA} (invisibly)
     initialize = function(x = NULL, window = NULL) {
         private$check_window_size(window)
-        private$window = window
+        private$window <- window
         if (!is.null(x)) {
             if (window >= length(x)) {
                 private$values <- x
@@ -126,8 +126,8 @@ SMA <- R6::R6Class("SMA", public = list(
     },
     #' @description Returns the current value of the average.
     #'
-    #' If the number of values in the stream is less than the size of the window,
-    #' the returned values is the mean of the entire stream of data.
+    #' If the number of values in the stream is less than the size of
+    #' the window, the returned values is the mean of the entire stream of data.
     #'
     #' @examples
     #' mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
@@ -297,17 +297,19 @@ EMA <- R6::R6Class("EMA", public = list(
     update_values = function(x) {
         k <- length(x)
         valpha <- rep((1 - private$alpha), k) ** seq(k - 1, 0)
-        private$weighted_sum <- valpha %*% x + (1 - private$alpha)**k * private$weighted_sum
+        private$weighted_sum <- valpha %*% x +
+            (1 - private$alpha)**k * private$weighted_sum
         private$count <- private$count + k
-        private$weighted_count <- (1 - (1 - private$alpha)**private$count) / private$alpha
+        private$weighted_count <- (1 - (1 - private$alpha)**private$count)
+        private$weighted_count <- private$weighted_count / private$alpha
     }
 )
 )
 
 #' Create a streamer for calculating the population and sample variance
 #'
-#' @description \code{Variance} creates a streaming algorithm that can be used to
-#' calculate the population and sample variance of incoming values
+#' @description \code{Variance} creates a streaming algorithm that can be
+#' used to calculate the population and sample variance of incoming values
 #'
 #'
 #' @docType class
@@ -335,7 +337,7 @@ Variance <- R6::R6Class("Variance", public = list(
             private$sum <- private$sum + sum(x)
             private$count <- private$count + length(x)
             mean <- private$sum / private$count
-            private$variance <- 1/private$count * sum((x - mean)**2)
+            private$variance <- 1 / private$count * sum((x - mean)**2)
         }
         invisible(self)
     },
@@ -388,7 +390,8 @@ Variance <- R6::R6Class("Variance", public = list(
         denominators <- n * seq(n - k, n - 1)
         coefs <- numerators / denominators
 
-        private$variance <- (n - k)/n * private$variance + coefs %*% (x - means)**2
+        private$variance <- (n - k) / n * private$variance +
+            coefs %*% (x - means)**2
         private$sum <- private$sum + sum(x)
         private$count <- n
 
@@ -515,18 +518,18 @@ ReservoirSampler <- R6::R6Class("ReservoirSampler", public = list(
 #' @examples
 #' set.seed(0)
 #' candidate_scores <- rexp(10, rate = 1)
-#' distr = list(df = "exp", rate = 1)
+#' distr = list(func = "exp", rate = 1)
 #' secretary <- SecretarySampler$new(10, c = 0, distr = distr)
 #' i <- 1
 #' while(secretary$value()$state == "CONTINUE"
-#'     || i <= length(candidate_scores)) {
+#'     && i <= length(candidate_scores)) {
 #'    secretary$update(candidate_scores[i])
 #'    i <- i + 1
 #' }
 #' secretary$value()
 #' @export
 #' @format An \code{\link{R6Class}} generator object
-SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
+SecretarySampler <- R6::R6Class("SecretarySampler", public = list(
     #' @description Creates a new \code{SecretarySampler} streamer object.
     #'
     #' @param N the maximum number of candidates to consider
@@ -534,7 +537,7 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
     #' @param distr list specifying the distribution of candidate scores
     #'
     #' @examples
-    #' distr <- list(df = "exp", "rate" = 1)
+    #' distr <- list(func = "exp", "rate" = 1)
     #' secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
     #'
     #' @return The new \code{SecretarySampler} (invisibly)
@@ -570,18 +573,17 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
             stop("Only single-value allowed in one step")
         }
         if (private$state == "STOP") {
-            warning("Candidate already chosen")
-        } else {
-            private$n_observed <- private$n_observed + 1
-            n_left <- private$N - private$n_observed
-            # Accept if score greater than the critical value - cost
-            # for the last candidate accept any non-negative score
-            if ((private$n_observed == private$N) ||
-                x > private$critical_values[n_left] - private$c) {
-                private$state <- "STOP"
-                if (x > 0) {
-                    private$optimal_score <- x
-                }
+            stop("Candidate already chosen")
+        }
+        private$n_observed <- private$n_observed + 1
+        n_left <- private$N - private$n_observed
+        # Accept if score greater than the critical value - cost
+        # for the last candidate accept any non-negative score
+        if ((private$n_observed == private$N) ||
+            x > private$critical_values[n_left] - private$c) {
+            private$state <- "STOP"
+            if (x > 0) {
+                private$optimal_score <- x
             }
         }
         invisible(self)
@@ -613,14 +615,14 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
     optimal_score = NULL,
     # Calculates A(x) as in doi:10.1016/0022-247X(61)90023-3
     find_a = function(x, distr) {
-        df <- distr["df"]
+        func <- distr["func"]
         # find the values of A(x)
-        if (df == "norm") {
+        if (func == "norm") {
             a <- (dnorm(x) - x * (1 - pnorm(x)))
-        } else if (df == "exp") {
+        } else if (func == "exp") {
             rate <-  as.numeric(distr["rate"])
             a <- (1 / rate) * exp(-x * rate)
-        } else if (df == "pois") {
+        } else if (func == "pois") {
             rate <-  as.numeric(distr["rate"])
             a <- rate * private$pois_cdf(floor(x), rate)
                 - x * private$pois_cdf(floor(x) + 1, rate)
@@ -629,12 +631,12 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
     },
     # Used to find the mean of a distribution
     find_mean = function(distr) {
-        df <- distr["df"]
-        if (df == "norm") {
+        func <- distr["func"]
+        if (func == "norm") {
             mean <- 0
-        } else if (df == "exp") {
+        } else if (func == "exp") {
             mean <- 1 / as.numeric(distr["rate"])
-        } else if (df == "pois") {
+        } else if (func == "pois") {
             mean <- as.numeric(distr["rate"])
         }
         return(mean)
@@ -650,17 +652,17 @@ SecretarySampler <- R6::R6Class("ReservoirSampler", public = list(
     },
     # Performs validity checks for the parameters of the distribution
     check_distr = function(distr) {
-        # check df
-        df <- distr["df"]
-        available_df <- c("norm", "exp", "pois")
-        if (is.null(df)) {
-            stop("distribution function \"df\" is missing, with no default")
-        } else if (!(df %in% available_df)) {
-            stop(paste("distribution function \"df\" must be in one of: ",
-                     available_df))
+        # check func
+        func <- distr["func"]
+        available_func <- c("norm", "exp", "pois")
+        if (is.null(func)) {
+            stop("distribution function \"func\" is missing, with no default")
+        } else if (!(func %in% available_func)) {
+            stop(paste("distribution function \"func\" must be in one of: ",
+                     available_func))
         }
         #check params of dist
-        if (df %in% c("exp", "pois")) {
+        if (func %in% c("exp", "pois")) {
             if (is.null(distr$rate)) {
                 stop("parameter \"rate\" is missing, with no default")
             } else if (as.numeric(distr$rate) <= 0) {
