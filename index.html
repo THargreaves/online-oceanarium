@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,18 +34,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">onlineoceanarium</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -60,16 +56,18 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="online-oceanarium" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#online-oceanarium" class="anchor"></a>Online Oceanarium</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="online-oceanarium">Online Oceanarium<a class="anchor" aria-label="anchor" href="#online-oceanarium"></a>
+</h1></div>
 
-<p><a href="https://github.com/THargreaves/online-oceanarium/actions"><img src="https://github.com/THargreaves/online-oceanarium/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="http://thargreaves.github.io/online-oceanarium/"><img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Documentation"></a> <a href="https://github.com/marketplace/actions/super-linter"><img src="https://github.com/THargreaves/online-oceanarium/workflows/Lint%20Code%20Base/badge.svg" alt="Code Quality"></a> <a href="https://app.codecov.io/gh/THargreaves/online-oceanarium/"><img src="https://img.shields.io/codecov/c/github/THargreaves/online-oceanarium" alt="Code Coverage"></a></p>
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
-<p><img src="https://user-images.githubusercontent.com/38204689/118853426-a6b9d300-b8cb-11eb-97f1-6420cd8c59a1.png" alt="Online Oceanarium Logo"></p>
-<p>Online Oceanarium is an esoteric R package collecting examples of <a href="https://en.wikipedia.org/wiki/Online_algorithm">online algorthms</a> (also known as streaming algorithms).</p>
+<p><a href="https://github.com/THargreaves/online-oceanarium/actions" class="external-link"><img src="https://github.com/THargreaves/online-oceanarium/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="http://thargreaves.github.io/online-oceanarium/" class="external-link"><img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Documentation"></a> <a href="https://github.com/marketplace/actions/super-linter" class="external-link"><img src="https://github.com/THargreaves/online-oceanarium/workflows/Lint%20Code%20Base/badge.svg" alt="Code Quality"></a> <a href="https://app.codecov.io/gh/THargreaves/online-oceanarium/" class="external-link"><img src="https://img.shields.io/codecov/c/github/THargreaves/online-oceanarium" alt="Code Coverage"></a></p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<div class="figure">
+<img src="https://user-images.githubusercontent.com/38204689/118853426-a6b9d300-b8cb-11eb-97f1-6420cd8c59a1.png" alt=""><p class="caption">Online Oceanarium Logo</p>
+</div>
+<p>Online Oceanarium is an esoteric R package collecting examples of <a href="https://en.wikipedia.org/wiki/Online_algorithm" class="external-link">online algorthms</a> (also known as streaming algorithms).</p>
 <p>In short, online algorithms process their input one piece at a time; a desirable property when processing an ammount of data that is too large to store in memory. This is also useful when data is streamed from a sensor or updating data source and you wish to update your algorithms state without running from scratch.</p>
 <p>The focus of this package is largely on online algorithms used for:</p>
 <ul>
@@ -79,23 +77,23 @@
 </ul>
 <p>We hope that this package can be used for both the practical application of online algorithms as well as a demonstration of the implementation of such methods for educational purposes.</p>
 </div>
-<div id="package-design" class="section level2">
-<h2 class="hasAnchor">
-<a href="#package-design" class="anchor"></a>Package Design</h2>
-<p>The package is composed of multiple <a href="https://adv-r.hadley.nz/r6.html">R6 classes</a>, each corresponding to a particular online algorithm. An instance of these classes is called a <em>streamer</em> and has three core public methods: <code>initialize</code>, <code>update</code>, <code>value</code>. Respectively, these are used to create a new streamer with initial values (by calling <code>&lt;class&gt;$new()</code>), update the state of the streamer by providing new data, and return the current value of the algorithm.</p>
+<div class="section level2">
+<h2 id="package-design">Package Design<a class="anchor" aria-label="anchor" href="#package-design"></a>
+</h2>
+<p>The package is composed of multiple <a href="https://adv-r.hadley.nz/r6.html" class="external-link">R6 classes</a>, each corresponding to a particular online algorithm. An instance of these classes is called a <em>streamer</em> and has three core public methods: <code>initialize</code>, <code>update</code>, <code>value</code>. Respectively, these are used to create a new streamer with initial values (by calling <code>&lt;class&gt;$new()</code>), update the state of the streamer by providing new data, and return the current value of the algorithm.</p>
 <p>For example, a simple streamer for calculating a running mean is below (note <code>CMA</code> stands for cumulative moving average).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">onlineoceanarium</span><span class="op">)</span>
-<span class="va">mean</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/CMA.html">CMA</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="va">mean</span><span class="op">$</span><span class="fu">value</span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">onlineoceanarium</span><span class="op">)</span>
+<span class="va">mean</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/CMA.html">CMA</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="va">mean</span><span class="op">$</span><span class="va">value</span>
 <span class="co">#&gt; [1] 1.5</span>
-<span class="va">mean</span><span class="op">$</span><span class="fu">update</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="va">mean</span><span class="op">$</span><span class="fu">value</span><span class="op">(</span><span class="op">)</span>
+<span class="va">mean</span><span class="op">$</span><span class="fu">update</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
+<span class="va">mean</span><span class="op">$</span><span class="va">value</span>
 <span class="co">#&gt; [1] 2.5</span></code></pre></div>
 </div>
-<div id="contributing" class="section level2">
-<h2 class="hasAnchor">
-<a href="#contributing" class="anchor"></a>Contributing</h2>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h2>
 <p>Contributions to the package are welcome. Before writing code, we suggest opening an issue detailing the algorithm you wish to implement or selecting an already open issue.</p>
 <p>Please ensure that all contributions are documented, have full coverage with unit tests, and follow the style guide set out in <code>.lintr</code>.</p>
 </div>
@@ -104,37 +102,49 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing onlineoceanarium</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Tim Hargreaves <br><small class="roles"> Maintainer </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-project.org/"><img src="https://img.shields.io/badge/language-R_(4.1.0%2B)-orange.svg?style=flat-square" alt="Language"></a></li>
-<li><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square" alt="License"></a></li>
-<li><a href="https://style.tidyverse.org"><img src="https://img.shields.io/badge/code%20style-tidyverse-informational?style=flat-square" alt="Code Style"></a></li>
+<li><a href="https://www.r-project.org/" class="external-link"><img src="https://img.shields.io/badge/language-R_(4.1.0%2B)-orange.svg?style=flat-square" alt="Language"></a></li>
+<li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square" alt="License"></a></li>
+<li><a href="https://style.tidyverse.org" class="external-link"><img src="https://img.shields.io/badge/code%20style-tidyverse-informational?style=flat-square" alt="Code Style"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Tim Hargreaves.</p>
+  <p></p>
+<p>Developed by Tim Hargreaves.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -142,6 +152,8 @@
 
   
 
+
+  
 
   </body>
 </html>
