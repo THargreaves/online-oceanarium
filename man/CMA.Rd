@@ -14,7 +14,7 @@ keep track of the mean of incoming values.
 \examples{
 mean <- CMA$new(c(1, 2))
 mean$update(c(3, 4))
-mean$value()
+mean$value
 #> [1] 2.5
 
 
@@ -32,22 +32,12 @@ mean <- CMA$new()
 mean <- CMA$new()
 mean$update(c(1, 2))
 
-
-## ------------------------------------------------
-## Method `CMA$value`
-## ------------------------------------------------
-
-mean <- CMA$new(c(1, 2, 3))
-mean$value()
-#> [1] 2
-
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{CMA$new()}}
 \item \href{#method-update}{\code{CMA$update()}}
-\item \href{#method-value}{\code{CMA$value()}}
 \item \href{#method-clone}{\code{CMA$clone()}}
 }
 }
@@ -103,30 +93,6 @@ The updated \code{CMA} (invisibly)
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{mean <- CMA$new()
 mean$update(c(1, 2))
-
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the current value of the mean.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CMA$value()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The current value of the \code{CMA} (invisibly)
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{mean <- CMA$new(c(1, 2, 3))
-mean$value()
-#> [1] 2
 
 }
 \if{html}{\out{</div>}}

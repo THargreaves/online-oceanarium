@@ -72,7 +72,8 @@ LinearRegression <- R6::R6Class("LinearRegression", public = list(
         } else if (private$method == "sherman-morrison") {
             private$sherman_morrison_update(X, y)
         }
-    },
+    }
+), active = list(
     #' @description Returns the current coefficient vector.
     #'
     #' @return The current coefficient vector

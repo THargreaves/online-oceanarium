@@ -13,7 +13,7 @@ keep track of the mean of the previous k datapoints
 }
 \examples{
 mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
-mean$value()
+mean$value
 #> [1] 4
 
 
@@ -31,22 +31,12 @@ mean <- SMA$new(window = 5)
 mean <- SMA$new(c(1, 2, 3), window = 3)
 mean$update(c(4, 5))
 
-
-## ------------------------------------------------
-## Method `SMA$value`
-## ------------------------------------------------
-
-mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
-mean$value()
-#> [1] 4
-
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SMA$new()}}
 \item \href{#method-update}{\code{SMA$update()}}
-\item \href{#method-value}{\code{SMA$value()}}
 \item \href{#method-clone}{\code{SMA$clone()}}
 }
 }
@@ -104,33 +94,6 @@ The updated \code{SMA} (invisibly)
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{mean <- SMA$new(c(1, 2, 3), window = 3)
 mean$update(c(4, 5))
-
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the current value of the average.
-
-If the number of values in the stream is less than the size of
-the window, the returned values is the mean of the entire stream of data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SMA$value()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The current value of \code{SMA} (invisibly)
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
-mean$value()
-#> [1] 4
 
 }
 \if{html}{\out{</div>}}

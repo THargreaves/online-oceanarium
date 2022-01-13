@@ -10,7 +10,8 @@ ArraySorting <- R6::R6Class("ArraySorting", public = list(
     update = function(x) {
         private$insert_values(x)
         invisible(self)
-    },
+    }
+), active = list(
     value = function() {
         private$sorted_values
     }
@@ -65,7 +66,8 @@ LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
     update = function(x) {
         private$insert_values(x)
         invisible(self)
-    },
+    }
+), active = list(
     value = function() {
         value <- c()
         if (is.null(private$head)) {
@@ -147,7 +149,7 @@ LinkedListSorting <- R6::R6Class("LinkedListSorting", public = list(
 #' @examples
 #' sorter <- Sorting$new(c(3, 1))
 #' sorter$update(c(2, 4))
-#' sorter$value()
+#' sorter$value
 #' #> [1] 1 2 3 4
 #'
 #' @export
@@ -179,12 +181,13 @@ Sorting <- R6::R6Class("Sorting", public = list(
     update = function(x) {
         private$sorter$update(x)
         invisible(self)
-    },
+    }
+), active = list(
     #' @description Returns the current value of the \code{Sorting}.
     #'
     #' @return The current value of the \code{Sorting}
     value = function() {
-        private$sorter$value()
+        private$sorter$value
     }
 ), private = list(
     method_lookup = list(

@@ -36,10 +36,10 @@ For example, a simple streamer for calculating a running mean is below (note `CM
 ```r
 library(onlineoceanarium)
 mean <- CMA$new(c(1, 2))
-mean$value()
+mean$value
 #> [1] 1.5
 mean$update(c(3, 4))
-mean$value()
+mean$value
 #> [1] 2.5
 ```
 

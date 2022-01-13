@@ -14,7 +14,7 @@ to sort incoming data
 \examples{
 sorter <- Sorting$new(c(3, 1))
 sorter$update(c(2, 4))
-sorter$value()
+sorter$value
 #> [1] 1 2 3 4
 
 }
@@ -23,7 +23,6 @@ sorter$value()
 \itemize{
 \item \href{#method-new}{\code{Sorting$new()}}
 \item \href{#method-update}{\code{Sorting$update()}}
-\item \href{#method-value}{\code{Sorting$value()}}
 \item \href{#method-clone}{\code{Sorting$clone()}}
 }
 }
@@ -67,19 +66,6 @@ Updates the \code{Sorting} streamer object.
 }
 \subsection{Returns}{
 The updated \code{Sorting} (invisibly)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the current value of the \code{Sorting}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Sorting$value()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The current value of the \code{Sorting}
 }
 }
 \if{html}{\out{<hr>}}
