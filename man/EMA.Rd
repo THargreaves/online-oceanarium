@@ -14,7 +14,7 @@ calculate the exponential moving average of incoming values
 \examples{
 exp_mean <- EMA$new(c(1, 2))
 exp_mean$update(c(3, 4))
-exp_mean$value()
+exp_mean$value
 #> [1] 3.266667
 
 
@@ -23,15 +23,6 @@ exp_mean$value()
 ## ------------------------------------------------
 
 exp_mean <- EMA$new()
-
-
-## ------------------------------------------------
-## Method `EMA$value`
-## ------------------------------------------------
-
-exp_mean <- EMA$new(x = c(1,2,3,4))
-exp_mean$value()
-#> [1] 3.266667
 
 
 ## ------------------------------------------------
@@ -46,7 +37,6 @@ exp_mean$update(c(3,4))
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{EMA$new()}}
-\item \href{#method-value}{\code{EMA$value()}}
 \item \href{#method-update}{\code{EMA$update()}}
 \item \href{#method-clone}{\code{EMA$clone()}}
 }
@@ -75,30 +65,6 @@ The new \code{EMA} (invisibly)
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{exp_mean <- EMA$new()
-
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the current value of the EMA.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{EMA$value()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The current value of the \code{EMA} (invisibly)
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{exp_mean <- EMA$new(x = c(1,2,3,4))
-exp_mean$value()
-#> [1] 3.266667
 
 }
 \if{html}{\out{</div>}}

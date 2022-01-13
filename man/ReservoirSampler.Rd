@@ -20,7 +20,7 @@ sampler <- ReservoirSampler$new(k = 10)
 for (i in 1:100) {
     sampler$update(i)
 }
-length(sampler$value())  # random sample from 1:100 of size 10
+length(sampler$value)  # random sample from 1:100 of size 10
 #> [1] 10
 
 }
@@ -29,7 +29,6 @@ length(sampler$value())  # random sample from 1:100 of size 10
 \itemize{
 \item \href{#method-new}{\code{ReservoirSampler$new()}}
 \item \href{#method-update}{\code{ReservoirSampler$update()}}
-\item \href{#method-value}{\code{ReservoirSampler$value()}}
 \item \href{#method-clone}{\code{ReservoirSampler$clone()}}
 }
 }
@@ -71,19 +70,6 @@ Update the \code{ReservoirSampler} streamer object.
 }
 \subsection{Returns}{
 The updated \code{ReservoirSampler} (invisibly)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the current random sample.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ReservoirSampler$value()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The current sample of the \code{ReservoirSampler}
 }
 }
 \if{html}{\out{<hr>}}

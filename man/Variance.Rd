@@ -26,17 +26,6 @@ variance <- Variance$new()
 
 
 ## ------------------------------------------------
-## Method `Variance$value`
-## ------------------------------------------------
-
-variance <- Variance$new(x = c(1,2,3,4))
-variance$value()
-#> [1] 1.25
-variance$value(sample = TRUE)
-#> [1] 1.666667
-
-
-## ------------------------------------------------
 ## Method `Variance$update`
 ## ------------------------------------------------
 
@@ -48,7 +37,6 @@ variance$update(c(3,4))
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{Variance$new()}}
-\item \href{#method-value}{\code{Variance$value()}}
 \item \href{#method-update}{\code{Variance$update()}}
 \item \href{#method-clone}{\code{Variance$clone()}}
 }
@@ -59,7 +47,7 @@ variance$update(c(3,4))
 \subsection{Method \code{new()}}{
 Creates a new \code{Variance} streamer object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Variance$new(x = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Variance$new(x = NULL, sample = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -83,41 +71,6 @@ The new \code{Variance} (invisibly)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the current value of the Variance.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Variance$value(sample = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{sample}}{for choosing between the population and sample variance.
-If `TRUE` the sample variance is returned.
-If `FALSE` the population variance is returned.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The current value of the \code{Variance} (invisibly)
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{variance <- Variance$new(x = c(1,2,3,4))
-variance$value()
-#> [1] 1.25
-variance$value(sample = TRUE)
-#> [1] 1.666667
-
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-update"></a>}}
 \if{latex}{\out{\hypertarget{method-update}{}}}
 \subsection{Method \code{update()}}{
@@ -130,6 +83,10 @@ Updates the Variance with a stream of new values
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{x}}{a vector of values to update the Variance}
+
+\item{\code{sample}}{for choosing between the population and sample variance.
+If `TRUE` the sample variance is returned.
+If `FALSE` the population variance is returned.}
 }
 \if{html}{\out{</div>}}
 }

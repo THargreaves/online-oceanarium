@@ -9,7 +9,7 @@
 #' @examples
 #' mean <- CMA$new(c(1, 2))
 #' mean$update(c(3, 4))
-#' mean$value()
+#' mean$value
 #' #> [1] 2.5
 #'
 #' @export
@@ -43,12 +43,13 @@ CMA <- R6::R6Class("CMA", public = list(
         private$sum <- private$sum + sum(x)
         private$count <- private$count + length(x)
         invisible(self)
-    },
+    }
+), active = list(
     #' @description Returns the current value of the mean.
     #'
     #' @examples
     #' mean <- CMA$new(c(1, 2, 3))
-    #' mean$value()
+    #' mean$value
     #' #> [1] 2
     #'
     #' @return The current value of the \code{CMA} (invisibly)
@@ -74,7 +75,7 @@ CMA <- R6::R6Class("CMA", public = list(
 #'
 #' @examples
 #' mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
-#' mean$value()
+#' mean$value
 #' #> [1] 4
 #'
 #' @export
@@ -123,7 +124,8 @@ SMA <- R6::R6Class("SMA", public = list(
             )
         }
         invisible(self)
-    },
+    }
+), active = list(
     #' @description Returns the current value of the average.
     #'
     #' If the number of values in the stream is less than the size of
@@ -131,7 +133,7 @@ SMA <- R6::R6Class("SMA", public = list(
     #'
     #' @examples
     #' mean <- SMA$new(c(1, 2, 3, 4, 5), window = 3)
-    #' mean$value()
+    #' mean$value
     #' #> [1] 4
     #'
     #' @return The current value of \code{SMA} (invisibly)
@@ -169,7 +171,7 @@ SMA <- R6::R6Class("SMA", public = list(
 #' @examples
 #' mean <- WMA$new(c(1, 2))
 #' mean$update(c(3, 4))
-#' mean$value()
+#' mean$value
 #' #> [1] 7.5
 #'
 #' @export
@@ -205,12 +207,13 @@ WMA <- R6::R6Class("WMA", public = list(
         private$weighted_sum <- private$weighted_sum + seq(n + 1, n + k) %*% x
         private$count <- n + k
         invisible(self)
-    },
+    }
+), active = list(
     #' @description Returns the current value of the weighted average.
     #'
     #' @examples
     #' weighted_mean <- WMA$new(c(1, 2, 3, 4))
-    #' weighted_mean$value()
+    #' weighted_mean$value
     #' #> [1] 7.5
     #'
     #' @return The current value of the \code{WMA} (invisibly)
@@ -237,7 +240,7 @@ WMA <- R6::R6Class("WMA", public = list(
 #' @examples
 #' exp_mean <- EMA$new(c(1, 2))
 #' exp_mean$update(c(3, 4))
-#' exp_mean$value()
+#' exp_mean$value
 #' #> [1] 3.266667
 #'
 #' @export
@@ -262,20 +265,6 @@ EMA <- R6::R6Class("EMA", public = list(
         }
         invisible(self)
     },
-    #' @description Returns the current value of the EMA.
-    #'
-    #' @examples
-    #' exp_mean <- EMA$new(x = c(1,2,3,4))
-    #' exp_mean$value()
-    #' #> [1] 3.266667
-    #'
-    #' @return The current value of the \code{EMA} (invisibly)
-    value = function() {
-        if (private$weighted_count == 0L) {
-            return(0)
-        }
-        as.numeric(private$weighted_sum / private$weighted_count)
-    },
     #' @description Updates the EMA with a stream of new values
     #'
     #' @param x a vector of values to update the EMA
@@ -288,6 +277,21 @@ EMA <- R6::R6Class("EMA", public = list(
     update = function(x) {
         private$update_values(x)
         invisible(self)
+    }
+), active = list(
+    #' @description Returns the current value of the EMA.
+    #'
+    #' @examples
+    #' exp_mean <- EMA$new(x = c(1,2,3,4))
+    #' exp_mean$value
+    #' #> [1] 3.266667
+    #'
+    #' @return The current value of the \code{EMA} (invisibly)
+    value = function() {
+        if (private$weighted_count == 0L) {
+            return(0)
+        }
+        as.numeric(private$weighted_sum / private$weighted_count)
     }
 ), private = list(
     weighted_sum = 0,
@@ -332,42 +336,22 @@ Variance <- R6::R6Class("Variance", public = list(
     #' variance <- Variance$new()
     #'
     #' @return The new \code{Variance} (invisibly)
-    initialize = function(x = NULL) {
+    initialize = function(x = NULL, sample = FALSE) {
         if (!is.null(x)) {
             private$sum <- private$sum + sum(x)
             private$count <- private$count + length(x)
             mean <- private$sum / private$count
             private$variance <- 1 / private$count * sum((x - mean)**2)
         }
+        private$sample <- sample
         invisible(self)
-    },
-    #' @description Returns the current value of the Variance.
-    #'
-    #' @param sample for choosing between the population and sample variance.
-    #'    If `TRUE` the sample variance is returned.
-    #'    If `FALSE` the population variance is returned.
-    #'
-    #' @examples
-    #' variance <- Variance$new(x = c(1,2,3,4))
-    #' variance$value()
-    #' #> [1] 1.25
-    #' variance$value(sample = TRUE)
-    #' #> [1] 1.666667
-    #'
-    #' @return The current value of the \code{Variance} (invisibly)
-    value = function(sample = FALSE) {
-        if (private$count == 0L) {
-            return(0)
-        }
-        if (sample) {
-            n <- private$count
-            return(as.numeric(private$variance * n / (n - 1)))
-        }
-        as.numeric(private$variance)
     },
     #' @description Updates the Variance with a stream of new values
     #'
     #' @param x a vector of values to update the Variance
+    #' @param sample for choosing between the population and sample variance.
+    #'    If `TRUE` the sample variance is returned.
+    #'    If `FALSE` the population variance is returned.
     #'
     #' @examples
     #' variance <- Variance$new(c(1,2))
@@ -397,10 +381,33 @@ Variance <- R6::R6Class("Variance", public = list(
 
         invisible(self)
     }
+), active = list(
+    #' @description Returns the current value of the Variance.
+    #'
+    #' @examples
+    #' variance <- Variance$new(x = c(1,2,3,4), sample = TRUE)
+    #' variance$value
+    #' #> [1] 1.25
+    #' variance <- Variance$new(x = c(1,2,3,4))
+    #' variance$value
+    #' #> [1] 1.666667
+    #'
+    #' @return The current value of the \code{Variance} (invisibly)
+    value = function() {
+        if (private$count == 0L) {
+            return(0)
+        }
+        if (private$sample) {
+            n <- private$count
+            return(as.numeric(private$variance * n / (n - 1)))
+        }
+        as.numeric(private$variance)
+    }
 ), private = list(
     variance = 0,
     sum = 0,
-    count = 0L
+    count = 0L,
+    sample = NULL
 )
 )
 
@@ -420,7 +427,7 @@ Variance <- R6::R6Class("Variance", public = list(
 #' for (i in 1:100) {
 #'     sampler$update(i)
 #' }
-#' length(sampler$value())  # random sample from 1:100 of size 10
+#' length(sampler$value)  # random sample from 1:100 of size 10
 #' #> [1] 10
 #'
 #' @export
@@ -445,7 +452,8 @@ ReservoirSampler <- R6::R6Class("ReservoirSampler", public = list(
     update = function(x) {
         private$update_values(x)
         invisible(self)
-    },
+    }
+), active = list(
     #' @description Returns the current random sample.
     #'
     #' @return The current sample of the \code{ReservoirSampler}
@@ -521,12 +529,12 @@ ReservoirSampler <- R6::R6Class("ReservoirSampler", public = list(
 #' distr = list(func = "exp", rate = 1)
 #' secretary <- SecretarySampler$new(10, c = 0, distr = distr)
 #' i <- 1
-#' while(secretary$value()$state == "CONTINUE"
+#' while(secretary$value$state == "CONTINUE"
 #'     && i <= length(candidate_scores)) {
 #'    secretary$update(candidate_scores[i])
 #'    i <- i + 1
 #' }
-#' secretary$value()
+#' secretary$value
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 SecretarySampler <- R6::R6Class("SecretarySampler", public = list(
@@ -587,11 +595,12 @@ SecretarySampler <- R6::R6Class("SecretarySampler", public = list(
             }
         }
         invisible(self)
-    },
+    }
+), active = list(
     #' @description Returns the state of the \code{SecretarySampler}
     #'
     #' @examples
-    #' secretary$value()$state
+    #' secretary$value$state
     #' #> [1] "STOP"
     #'
     #' @return list with summary of the state of the secretary object.

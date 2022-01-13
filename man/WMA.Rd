@@ -17,7 +17,7 @@ down to one.
 \examples{
 mean <- WMA$new(c(1, 2))
 mean$update(c(3, 4))
-mean$value()
+mean$value
 #> [1] 7.5
 
 
@@ -35,22 +35,12 @@ weighted_mean <- WMA$new()
 weighted_mean <- WMA$new()
 weighted_mean$update(c(1, 2))
 
-
-## ------------------------------------------------
-## Method `WMA$value`
-## ------------------------------------------------
-
-weighted_mean <- WMA$new(c(1, 2, 3, 4))
-weighted_mean$value()
-#> [1] 7.5
-
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{WMA$new()}}
 \item \href{#method-update}{\code{WMA$update()}}
-\item \href{#method-value}{\code{WMA$value()}}
 \item \href{#method-clone}{\code{WMA$clone()}}
 }
 }
@@ -106,30 +96,6 @@ The updated \code{WMA} (invisibly)
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{weighted_mean <- WMA$new()
 weighted_mean$update(c(1, 2))
-
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the current value of the weighted average.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{WMA$value()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The current value of the \code{WMA} (invisibly)
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{weighted_mean <- WMA$new(c(1, 2, 3, 4))
-weighted_mean$value()
-#> [1] 7.5
 
 }
 \if{html}{\out{</div>}}

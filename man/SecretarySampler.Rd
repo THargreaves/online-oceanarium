@@ -30,12 +30,12 @@ candidate_scores <- rexp(10, rate = 1)
 distr = list(func = "exp", rate = 1)
 secretary <- SecretarySampler$new(10, c = 0, distr = distr)
 i <- 1
-while(secretary$value()$state == "CONTINUE"
+while(secretary$value$state == "CONTINUE"
     && i <= length(candidate_scores)) {
    secretary$update(candidate_scores[i])
    i <- i + 1
 }
-secretary$value()
+secretary$value
 
 ## ------------------------------------------------
 ## Method `SecretarySampler$new`
@@ -51,21 +51,12 @@ secretary <- SecretarySampler$new(N = 10, c = 0, distr = distr)
 
 secretary$update(2.5)
 
-
-## ------------------------------------------------
-## Method `SecretarySampler$value`
-## ------------------------------------------------
-
-secretary$value()$state
-#> [1] "STOP"
-
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SecretarySampler$new()}}
 \item \href{#method-update}{\code{SecretarySampler$update()}}
-\item \href{#method-value}{\code{SecretarySampler$value()}}
 \item \href{#method-clone}{\code{SecretarySampler$clone()}}
 }
 }
@@ -125,29 +116,6 @@ The updated \code{SecretarySampler} (invisibly)
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{secretary$update(2.5)
-
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the state of the \code{SecretarySampler}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SecretarySampler$value()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-list with summary of the state of the secretary object.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{secretary$value()$state
-#> [1] "STOP"
 
 }
 \if{html}{\out{</div>}}

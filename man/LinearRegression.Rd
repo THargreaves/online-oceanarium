@@ -25,7 +25,6 @@ reg$update(X_new, y_new)
 \itemize{
 \item \href{#method-new}{\code{LinearRegression$new()}}
 \item \href{#method-update}{\code{LinearRegression$update()}}
-\item \href{#method-value}{\code{LinearRegression$value()}}
 \item \href{#method-clone}{\code{LinearRegression$clone()}}
 }
 }
@@ -74,19 +73,6 @@ Updates the regression coefficient based on new data
 #' @return The updated \code{LinearRegression} (invisibly)}
 }
 \if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-value"></a>}}
-\if{latex}{\out{\hypertarget{method-value}{}}}
-\subsection{Method \code{value()}}{
-Returns the current coefficient vector.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LinearRegression$value()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The current coefficient vector
 }
 }
 \if{html}{\out{<hr>}}
