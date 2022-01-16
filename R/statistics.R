@@ -691,3 +691,247 @@ SecretarySampler <- R6::R6Class("SecretarySampler", public = list(
     }
 )
 )
+#' Create an abstract streamer for the multi-armed bandit problem.
+#'
+#' @description \code{MultiArmedBandit}
+#'
+#' @docType class
+#'
+#'
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+MultiArmedBandit <- R6::R6Class(
+    "MultiArmedBandit",
+    public = list(
+        #' @description Creates a new \code{MultiArmedBandit} streamer object.
+        #'
+        #' @param K the number of arms
+        #' @param T number of rounds / draws
+        #'
+        #' @return The new \code{MultiArmedBandit} (invisibly)
+        initialize = function(K, T, N = NULL) {
+            private$K <- K
+            private$T <- T
+            arm_info <- list()
+            for (k in seq(K)) {
+                arm_info[[k]] <- list(mean = CMA$new())
+            }
+            private$arm_info <- arm_info
+            invisible(self)
+        },
+        #' @description Update the \code{MultiArmedBandit} streamer object.
+        #'
+        #' @param x a single draw from an arm
+        #' @param k index of the chosen arm
+        #'
+        #'
+        #' @return The updated code{MultiArmedBandit} (invisibly)
+        update = function(x, k) {
+            if (length(x) > 1) {
+                stop("Only single-value updated allowed")
+            }
+            private$arm_info[[k]]$mean$update(x)
+            private$n_observed <- private$n_observed + 1
+        }
+    ),
+    active = list(
+        #' @description Returns the the list containing values known to
+        #' to the Bandit in the current state.
+        #'
+        #'
+        #' @return list with summary of the state of the Bandit.
+        value = function() {
+            private$get_state()
+        }
+    ),
+    private = list(
+        K = NULL,
+        T = NULL,
+        N = NULL,
+        which = NULL,
+        n_observed = 0,
+        state = NULL,
+        arm_info = NULL,
+        #' @description Creates and returns a list with information about
+        #' the values known to the Bandit in the current state.
+        #'
+        #' @return list with summary of the state of the Bandit.
+        get_state = function() {
+            arm_means <- c()
+            for (k in seq(K)) {
+                arm_means[k] <- private$arm_info[[k]]$mean$value
+            }
+            state <- list(
+                which = private$which,
+                state = private$state,
+                n_observed = private$n_observed,
+                arm_means = arm_means
+            )
+            state
+        }
+    )
+)
+#' Create a streamer for the uniform exploration strategy in the multi-armed
+#' bandit problem.
+#'
+#' @description \code{ExploreFristNBandit}
+#'
+#' @docType class
+#'
+#' @examples
+#' means <- c(1, 2)
+#' N <- 3
+#' T <- 10
+#' K <- length(means)
+#' Bandit <- ExploreFristNBandit$new(K, T, N)
+#' for (t in seq(T)) {
+#'     # get which arm to choose
+#'     k <- Bandit$value$which
+#'     # update the streamer with a value drawn from the kth arm
+#'     Bandit$update(rnorm(1, mean = means[k]), k)
+#' }
+#'
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+ExploreFristNBandit <- R6::R6Class(
+    "ExploreFirstNBandit",
+    inherit = MultiArmedBandit,
+    public = list(
+        #' @description Creates a new \code{ExploreFirstNBandit} streamer
+        #' object.
+        #'
+        #' @param K the number of arms
+        #' @param T number of rounds / draws
+        #' @param N number of draws in the exploration phase, if not specified
+        #' the optimal value for N = (T/K) ^ (2/3) * log(T) ^ (1/3) is chosen.
+        #'
+        #' @examples
+        #' Bandit <- ExploreFristNBandit$new(3, 20, 2)
+        #'
+        #' @return The new \code{ExploreFristNBandit} (invisibly)
+        initialize = function(K, T, N = NULL) {
+            super$initialize(K, T)
+            private$state <- "exploration"
+            if (is.null(N)) {
+                N <- floor((T / K) ^ (2 / 3) * log(T) ^ (1 / 3))
+            }
+            if (T < N * K) {
+                stop(sprintf(
+                    "More draws are required for the values of
+                         N=%s and K=%s",
+                    N,
+                    K
+                ))
+            }
+            private$N <- N
+            private$which <- 1
+            invisible(self)
+        },
+        #' @description Update the \code{ExploreFristNBandit} streamer object.
+        #'
+        #' @param x a single draw from an arm
+        #' @param k index of the chosen arm
+        #'
+        #' @examples
+        #' Bandit$update(rnorm(1), 1)
+        #'
+        #' @return The updated code{ExploreFristNBandit} (invisibly)
+        update = function(x, k) {
+            super$update(x, k)
+            if (private$n_observed < K * N) {
+                private$which <- ceiling(private$n_observed / private$N)
+            } else if (private$n_observed == K * N) {
+                private$state <- "exploitation"
+                private$which <-
+                    which.max(private$get_state()$arm_means)
+            }
+        }
+    ),
+    private = list(N = NULL)
+)
+
+#' Create a streamer for the epsilon-greedy strategy in the multi-armed
+#' bandit problem.
+#'
+#' @description \code{EpsilonGreedyBandit}
+#'
+#' @docType class
+#'
+#' @examples
+#' means <- c(1, 2, 5)
+#' T <- 10
+#' K <- length(means)
+#' Bandit <- EpsilonGreedyBandit$new(K, T)
+#' for (t in seq(T)) {
+#'     # get which arm to choose
+#'     k <- Bandit$value$which
+#'     # update the streamer with a value drawn from the kth arm
+#'     x <- rnorm(1, mean = means[k])
+#'     Bandit$update(x, k)
+#' }
+#'
+#' @export
+#' @format An \code{\link{R6Class}} generator object
+EpsilonGreedyBandit <- R6::R6Class(
+    "EpsilonGreedyBandit",
+    inherit = MultiArmedBandit,
+    public = list(
+        #' @description Creates a new \code{EpsilonGreedyBandit} streamer
+        #' object.
+        #'
+        #' @param K the number of arms
+        #' @param T number of rounds / draws
+        #' @param epsilon vector of length T specifying the exploration
+        #' probabilities at time t. If NULL, an optiam value of
+        #' epsilon(t) = t^(-1/3) * (K * log(t))^(1 / 3) is used.
+        #'
+        #' @examples
+        #' Bandit <- EpsilonGreedyBandit$new(3, 20, rep(0.1, 20))
+        #'
+        #' @return The new \code{EpsilonGreedyBandit} (invisibly)
+        initialize = function(K, T, epsilon  =  NULL)
+        {
+            super$initialize(K, T)
+            if (is.null(epsilon))
+            {
+                t <- seq(T)
+                epsilon <-
+                    t ^ (-1 / 3) * (K * logb(t, base = T)) ^ (1 / 3)
+                epsilon[1] <- 1
+            }
+            if (length(epsilon) != T) {
+                stop(
+                    "The length of probability vector epsilon, must agree
+                 with the total number of draws T."
+                )
+            }
+            if (any(epsilon > 1) || any(epsilon < 0)) {
+                stop("All values in epsilon must be between 0 and 1.")
+            }
+            private$state <- "exploration"
+            private$which <- floor(runif(1, 1, K + 1))
+            private$epsilon <- epsilon
+            invisible(self)
+        },
+        #' @description Update the \code{EpsilonGreedyBandit} streamer object.
+        #'
+        #' @param x a single draw from an arm
+        #' @param k index of the chosen arm
+        #'
+        #' @examples
+        #' Bandit$update(rnorm(1), 1)
+        #'
+        #' @return The updated code{EpsilonGreedyBandit} (invisibly)
+        update = function(x, k) {
+            super$update(x, k)
+            if (runif(1) < private$epsilon[private$n_observed]) {
+                private$state <- "exploration"
+                k <- floor(runif(1, 1, K + 1))
+            } else {
+                private$state <- "exploitation"
+                k <- which.max(private$get_state()$arm_means)
+            }
+            private$which <- k
+        }
+    ), private = list(epsilon = NULL)
+)

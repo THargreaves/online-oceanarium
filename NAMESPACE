@@ -2,7 +2,10 @@
 
 export(CMA)
 export(EMA)
+export(EpsilonGreedyBandit)
+export(ExploreFristNBandit)
 export(LinearRegression)
+export(MultiArmedBandit)
 export(ReservoirSampler)
 export(SMA)
 export(SecretarySampler)
